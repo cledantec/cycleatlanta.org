@@ -1,0 +1,11 @@
+/* ==========================================================================
+   Custom styles
+   
+   @author: Christopher Le Dantec, ledantec@gatech.edu
+   ========================================================================== */
+
+#mapBody {	width: 100%; 
+		height: 800px; 
+		position: relative;  
+	}
+
