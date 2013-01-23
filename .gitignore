@@ -15,3 +15,10 @@ profile
 # Directories to skip #
 ######################
 test
+cycleatlanta.org/index.html
+
+include/Database.php
+
+include/Database_dev.php
+
+include/Database_dev.php
