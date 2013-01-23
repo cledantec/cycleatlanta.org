@@ -32,10 +32,10 @@ class CoordFactory
 		return false;
 	}
 
+	// trip_id can be a single id, or an array of ids
+	// if it's an array of ids, returns the result object directly because creating an
+	// array of hundreds of thousands of Coord objects is memory-intensive and not useful
 	public static function getCoordsByTrip( $trip_id )
-  // trip_id can be a single id, or an array of ids
-  // if it's an array of ids, returns the result object directly because creating an
-  // array of hundreds of thousands of Coord objects is memory-intensive and not useful
 	{
 		$db = DatabaseConnectionFactory::getConnection();
 		$coords = array();
@@ -77,7 +77,6 @@ class CoordFactory
 		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 			' RET2: memory_usage = ' . memory_get_usage(True));
 
-//		return $coords;
 		return json_encode($coords);
 	}
 }
