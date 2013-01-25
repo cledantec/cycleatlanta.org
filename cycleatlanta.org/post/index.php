@@ -22,11 +22,13 @@ Util::log( $purpose );
 Util::log( $device );
 Util::log( strlen( $device ) );
 */
+Util::log( "device:" );
+Util::log( $device );
 
 Util::log( "user data:" );
 Util::log( $userData );
 
-//Util::log( $_POST );
+/* Util::log( $_POST ); */
 Util::log( "protocol version = {$version}" );
 
 

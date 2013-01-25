@@ -6,13 +6,12 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
+        <title>Visualizing Cycle Atlanta Data</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" href="css/bootstrap.min.css">
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4/leaflet.css" />
-
         <style>
             body {
                 padding-top: 60px;
@@ -22,7 +21,18 @@
         <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
         <link rel="stylesheet" href="css/main.css">
 
-        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+<!--         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script> -->
+        <script type="text/javascript">	
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-35489732-1']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+	</script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -35,19 +45,19 @@
             <div class="navbar-inner">
                 <div class="container">
 
-                    <a class="brand" href="#">Transit Hack Day: Visualizing Cycle Atlanta Data.</a>
+                    <p class="cycleAtl_title">Visualizing Cycle Atlanta Data.</p>
 
                 </div>
             </div>
         </div>
 
         <div class="container">
-
+	        <div id="controls"><a href="#" class="tileToggle" onclick="toggleTiles();">Hide</a> streets</div>
             <div id="mapBody"></div>
             <hr>
 
             <footer>
-                <p>Visualizing <span class="trip_count">n</span> of <span class="trip_total">m</span> trips collected by users of the Cycle Atlanta apps.</p>
+                <p>Visualizing <span class="trip_count">n</span> of <span class="trip_total">m</span> trips collected by users of the <a href="http://cycleatlanta.org">Cycle Atlanta apps</a>.</p>
             </footer>
 
         </div> <!-- /container -->
@@ -61,14 +71,12 @@
         <script src="js/main.js"></script>
 
         <script type="text/javascript">
-            (function() {
-                Trips.init({
-                    loadNum: 5
-                });
-
-            })();
+	            (function() {
+	                Trips.init({
+	                    loadNum: 5
+	                });
+	
+	            })();
         </script>
-
-
     </body>
 </html>
