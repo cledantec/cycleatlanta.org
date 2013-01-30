@@ -119,7 +119,8 @@ class TripFactory
 
 		if ( $db->query( $query ) ) 
 		{
-			Util::log( __METHOD__ . "() updated trip {$id}: {$query}" );
+			//Util::log( __METHOD__ . "() updated trip {$id}: {$query}" );
+			Util::log( __METHOD__ . "() updated trip {$id}" );
 			return self::getTrip( $id );
 		}
 		else
