@@ -100,7 +100,7 @@ class UserFactory
 			if ( $db->query( $query ) ) 
 			{
 				Util::log( __METHOD__ . "() updated user {$old->id}:" );
-				Util::log( $query );
+				// Util::log( $query );
 				return self::getUser( $old->id );
 			}
 			else

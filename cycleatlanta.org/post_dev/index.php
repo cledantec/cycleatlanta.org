@@ -24,6 +24,19 @@ foreach($_SERVER as $key => $value) {
 }
 Util::log ( "++++++++++++++++++++++" );   
 
+$version = isset( $_POST['version'] )    ? $_POST['version']    : null; 
+
+if ($version == null){
+	$mypost = gzinflate($_POST[1]);
+	//$mypost=gzopen($_POST[1], r);
+	Util::log ( "++post data [0]: " );
+	Util::log( $_POST[0] );
+	Util::log ( "++post data [1]: " );
+	Util::log( $_POST[1] );
+	Util::log ( "++post data: " );
+	Util::log( $_POST );
+	
+}
 
 $coords   = isset( $_POST['coords'] )  ? $_POST['coords']  : null; 
 $device   = isset( $_POST['device'] )  ? $_POST['device']  : null; 
@@ -31,7 +44,7 @@ $notes    = isset( $_POST['notes'] )   ? $_POST['notes']   : null;
 $purpose  = isset( $_POST['purpose'] ) ? $_POST['purpose'] : null; 
 $start    = isset( $_POST['start'] )   ? $_POST['start']   : null; 
 $userData = isset( $_POST['user'] )    ? $_POST['user']    : null; 
-$version = isset( $_POST['version'] )    ? $_POST['version']    : null; 
+
 
 Util::log ( "version: {$version}");
 
@@ -42,12 +55,12 @@ function gzdecode($data)
 
 if ( $version == PROTOCOL_VERSION_3 && $coords != null){
 	//try unzipping
-	Util::log( "Should have binary coords: {$coords}" );
+
 	
 //	Util::log( "decode base64 and unzip:" );
 //	$decoded_coords = base64_decode($coords);
-	$inflated_coords = gzdecode($coords);
-	Util::log( "inflated coords data: {$inflated_coords}" );
+//	$inflated_coords = gzdecode($coords);
+//	Util::log( "inflated coords data: {$inflated_coords}" );
 }
 /*
 Util::log( $coords );
@@ -88,8 +101,8 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		if ( ( $userData = (object) json_decode( $userData ) ) &&
 			 ( $userObj  = new User( $userData ) ) )
 		{
-			Util::log( $userData );
-			Util::log( $userObj );
+			// Util::log( $userData );
+			// Util::log( $userObj );
 			// update user record
 			if ( $tempUser = UserFactory::update( $user, $userObj ) )
 				$user = $tempUser;
@@ -121,7 +134,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 			exit;
 		}
 		else
-			Util::log( "saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords.." );
+			Util::log( "Saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords.." );
 
 		// init stop to null
 		$stop = null;
