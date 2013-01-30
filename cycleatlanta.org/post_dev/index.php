@@ -1,8 +1,10 @@
 <?php
 
+require_once('Util.php');
 require_once('UserFactory_dev.php');
 require_once('TripFactory_dev.php');
 require_once('CoordFactory_dev.php');
+require_once('Decompress.php');
 
 define( 'DATE_FORMAT',        'Y-m-d h:i:s' );
 define( 'PROTOCOL_VERSION_1', 1 );
@@ -24,46 +26,53 @@ foreach($_SERVER as $key => $value) {
 }
 Util::log ( "++++++++++++++++++++++" );   
 
-
-$coords   = isset( $_POST['coords'] )  ? $_POST['coords']  : null; 
-$device   = isset( $_POST['device'] )  ? $_POST['device']  : null; 
-$notes    = isset( $_POST['notes'] )   ? $_POST['notes']   : null; 
-$purpose  = isset( $_POST['purpose'] ) ? $_POST['purpose'] : null; 
-$start    = isset( $_POST['start'] )   ? $_POST['start']   : null; 
-$userData = isset( $_POST['user'] )    ? $_POST['user']    : null; 
-$version = isset( $_POST['version'] )    ? $_POST['version']    : null; 
-
-Util::log ( "version: {$version}");
-
-function gzdecode($data) 
-{ 
-    return gzinflate(substr($data,10,-8)); 
-} 
-
-if ( $version == PROTOCOL_VERSION_3 && $coords != null){
-	//try unzipping
-	Util::log( "Should have binary coords: {$coords}" );
-	
-//	Util::log( "decode base64 and unzip:" );
-//	$decoded_coords = base64_decode($coords);
-	$inflated_coords = gzdecode($coords);
-	Util::log( "inflated coords data: {$inflated_coords}" );
+// take protocol from HTTP header if present; otherwise URL query var or POST body
+if (isset($_SERVER['HTTP_CYCLEATL_PROTOCOL_VERSION'])) {
+  $version = intval($_SERVER['HTTP_CYCLEATL_PROTOCOL_VERSION']);
+} elseif (isset($_GET['version'])) {
+  $version = intval($_GET['version']);
+} else {
+  $version = intval($_POST['version']);
 }
-/*
-Util::log( $coords );
+
+Util::log ( "protocol version: {$version}");
+
+// older protocol types use a urlencoded form body
+if ( $version == PROTOCOL_VERSION_1 || $version == PROTOCOL_VERSION_2 || $version == null) {
+  $coords   = isset( $_POST['coords'] )  ? $_POST['coords']  : null; 
+  $device   = isset( $_POST['device'] )  ? $_POST['device']  : null; 
+  $notes    = isset( $_POST['notes'] )   ? $_POST['notes']   : null; 
+  $purpose  = isset( $_POST['purpose'] ) ? $_POST['purpose'] : null; 
+  $start    = isset( $_POST['start'] )   ? $_POST['start']   : null; 
+  $userData = isset( $_POST['user'] )    ? $_POST['user']    : null; 
+} 
+// new zipped body, still mostly urlencoded form
+elseif ( $version == PROTOCOL_VERSION_3) {
+  if ($_SERVER['HTTP_CONTENT_ENCODING'] == 'gzip' ||
+      $_SERVER['HTTP_CONTENT_ENCODING'] == 'zlib') {
+    $body = decompress_zlib($HTTP_RAW_POST_DATA);
+  } else {
+    $body = $HTTP_RAW_POST_DATA;
+  }
+  $query_vars = array();
+  parse_str($body, $query_vars);
+  $coords   = isset( $query_vars['coords'] )  ? $query_vars['coords']  : null;
+  $device   = isset( $query_vars['device'] )  ? $query_vars['device']  : null;
+  $notes    = isset( $query_vars['notes'] )   ? $query_vars['notes']   : null;
+  $purpose  = isset( $query_vars['purpose'] ) ? $query_vars['purpose'] : null;
+  $start    = isset( $query_vars['start'] )   ? $query_vars['start']   : null;
+  $userData = isset( $query_vars['user'] )    ? $query_vars['user']    : null;
+}
+
+
+/* Util::log( $coords );
 Util::log( $purpose );
 Util::log( $device );
 Util::log( strlen( $device ) );
 */
 
-Util::log( "POST data:" );
-Util::log( $_POST );
-
 Util::log( "user data:" );
 Util::log( $userData );
-
-Util::log( "protocol version = {$version}" );
-
 
 // TODO: require valid user agent
 
