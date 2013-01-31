@@ -182,8 +182,8 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 				}
 
 				// get the last coord's recorded => stop timestamp
-				if ( $coord && isset( $coord->rec ) )
-					$stop = $coord->rec;
+				if ( $coord && isset( $coord->r ) )
+					$stop = $coord->r;
 				}
 			else if ( $version == PROTOCOL_VERSION_2 )
 			{
