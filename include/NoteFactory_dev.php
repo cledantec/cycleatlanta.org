@@ -32,16 +32,16 @@ class NoteFactory
 			Util::log( __METHOD__ . "() added note for user {$user_id}, at ( {$latitude}, {$longitude} ), on {$recorded}, type {$note_type}, details {$details}" );
 			
 			//save the image
-			Util::log (getcwd()); 
-			if ($image_file != "<>"){
-				if (file_put_contents(IMAGE_PATH . $image_url . '.jpg', $image_file)) {
+			if ($image_file){		
+				if(move_uploaded_file($_FILES['file']['tmp_name'], IMAGE_PATH . $image_url . ".jpg")) {
 					// Move succeed.
-					Util::log ("Image saved to ". IMAGE_PATH . $image_url . "jpg");
+					Util::log ("Image saved to ". IMAGE_PATH . $image_url . ".jpg");
 				} else {
 				    // Move failed. Possible duplicate?
 					Util::log ("WARNING: Image not saved ". IMAGE_PATH . $image_url . ".jpg");
 				}
 			}
+			
 			return self::getNote( $id );
 		}
 		else
