@@ -27,6 +27,7 @@ foreach($_SERVER as $key => $value) {
     Util::log ( "{$header}: {$value}" );
     //$headers[$header] = $value;
 }
+
 Util::log ( "++++++++++++++++++++++" );   
 */
 
@@ -69,17 +70,10 @@ elseif ( $version == PROTOCOL_VERSION_3) {
   $userData = isset( $query_vars['user'] )    ? $query_vars['user']    : null;
 }
 elseif ( $version == PROTOCOL_VERSION_4 ) {
-  if ($_SERVER['HTTP_CONTENT_ENCODING'] == 'gzip' ||
-      $_SERVER['HTTP_CONTENT_ENCODING'] == 'zlib') {
-    $body = decompress_zlib($HTTP_RAW_POST_DATA);
-  } else {
-    $body = $HTTP_RAW_POST_DATA;
-  }
-  $query_vars = array();
-  parse_str($body, $query_vars);
-  $note   		= isset( $query_vars['note'] )  		? $query_vars['note']  		: null;
-  $device   	= isset( $query_vars['device'] )  		? $query_vars['device']  	: null;
-  $imageData 	= isset( $query_vars['image_data'] )    ? $query_vars['image_data'] : null;
+  $note   		= isset( $_POST['note'] )  			? $_POST['note']  			: null;
+  $device   	= isset( $_POST['device'] )  		? $_POST['device']  		: null;
+  $imageData 	= isset( $_FILES['file']['tmp_name'] ) ? $_FILES['file']['tmp_name'] 	: null;
+
 }
 
 // validate device ID
@@ -139,9 +133,9 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 										$noteObj->i, //image url (name only)
 										$imageData ) )
 				{
-					Util::log( "Added note {$addedNote->id} type {$addedNote->type}" );
+					Util::log( "Added note {$addedNote->id} type {$addedNote->note_type}" );
 				} else
-					Util::log( "WARNING failed to add note {$addedNote->id} type {$addedNote->type}" );					
+					Util::log( "WARNING failed to add note {$addedNote->id} type {$addedNote->note_type}" );					
 			}
 			
 			header("HTTP/1.1 201 Created");
