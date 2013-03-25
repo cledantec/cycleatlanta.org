@@ -16,6 +16,7 @@ class User
 	public $cycling_freq;
 	public $rider_history;
 	public $rider_type;
+	public $app_version;
 	
 
 	public function __construct( $object=null )
@@ -68,7 +69,10 @@ class User
 			// "How long have you cycled?"
 			if ( isset( $object->rider_history ) )
 				$this->rider_history = $object->rider_history;
-
+				
+			// app version
+			if ( isset( $object->app_version ) )
+				$this->app_version = $object->app_version;
 		}
 	}
 
@@ -90,6 +94,7 @@ class User
 			'cycling_freq' 	=> $this->cycling_freq,
 			'rider_type' 	=> $this->rider_type,
 			'rider_history' => $this->rider_history,
+			'app_version'	=> $this->app_version,
 			
 		);
 

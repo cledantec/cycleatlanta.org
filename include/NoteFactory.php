@@ -1,10 +1,10 @@
 <?php
 
-require_once('Database_dev.php');
+require_once('Database.php');
 require_once('Note.php');
 require_once(dirname(__FILE__).'/pel/PelJpeg.php');
 
-define ('IMAGE_PATH', '../uploads_dev/');
+define ('IMAGE_PATH', '../uploads/');
 
 class NoteFactory
 {
