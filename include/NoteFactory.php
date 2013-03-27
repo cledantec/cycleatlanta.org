@@ -44,7 +44,7 @@ class NoteFactory
 			Util::log("note type text: {$note_type_text}");
 			
 			//save the image
-			if ($image_file){		
+			if (filesize($image_file)>0){		
 				if(move_uploaded_file($_FILES['file']['tmp_name'], IMAGE_PATH . $image_url . ".jpg")) {
 					// Move succeed.
 					Util::log ("Image saved to ". IMAGE_PATH . $image_url . ".jpg");
