@@ -16,7 +16,6 @@ define( 'PROTOCOL_VERSION_4', 4 ); // this is for uploading the note data (compr
 Util::log( " ");
 Util::log( "+++++++++++++ Development: Upload Start +++++++++++++");
 
-
 /*
 Util::log ( "++++ HTTP Headers ++++" );
 $headers = array();
