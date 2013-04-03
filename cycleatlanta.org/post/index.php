@@ -57,8 +57,8 @@ if ( is_string( $device ) && strlen( $device ) >= 30 )
 		if ( ( $userData = (object) json_decode( $userData ) ) &&
 			 ( $userObj  = new User( $userData ) ) )
 		{
-			// Util::log( $userData );
-			// Util::log( $userObj );
+			Util::log( $userData );
+			Util::log( $userObj );
 			// update user record
 			if ( $tempUser = UserFactory::update( $user, $userObj ) )
 				$user = $tempUser;
@@ -90,7 +90,7 @@ if ( is_string( $device ) && strlen( $device ) >= 30 )
 			exit;
 		}
 		else
-			Util::log( "Saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords.." );
+			Util::log( "saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords.." );
 
 		// init stop to null
 		$stop = null;
