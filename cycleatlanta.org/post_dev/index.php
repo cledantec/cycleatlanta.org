@@ -189,6 +189,8 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 			if ( ( $userData = (object) json_decode( $userData ) ) &&
 				 ( $userObj  = new User( $userData ) ) )
 			{
+				// Util::log( $userData );
+				// Util::log( $userObj );
 				// update user record
 				if ( $tempUser = UserFactory::update( $user, $userObj ) )
 					$user = $tempUser;
