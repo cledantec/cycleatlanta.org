@@ -13,8 +13,7 @@ define( 'PROTOCOL_VERSION_2', 2 );
 define( 'PROTOCOL_VERSION_3', 3 ); // this is for uploading the trip data (compressed)
 define( 'PROTOCOL_VERSION_4', 4 ); // this is for uploading the note data (compressed)
 
-Util::log( "+++++++++++++ Development: Upload Start +++++++++++++");
-
+Util::log( "+++++++++++++ Development: New Upload +++++++++++++");
 
 /*
 Util::log ( "++++ HTTP Headers ++++" );
@@ -144,7 +143,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 			if ( $note_id = NoteFactory::getNoteByUserStart( $user->id, $timeStamp ) ){
 				// we've already saved a trip for this user with this start time
 				Util::log( "WARNING a note for user {$user->id} at {$timeStamp} has already been saved" );
-				Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
+				
 				//
 				// add code here to handle updating the note details if implemented 
 				//
@@ -175,7 +174,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 				} else
 					Util::log( "WARNING failed to add note {$addedNote->id} type {$addedNote->note_type}" );					
 			}
-			Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
+			
 			header("HTTP/1.1 201 Created");
 			$response = new stdClass;
 			$response->status = 'success';
@@ -213,7 +212,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 			{
 				// we've already saved a trip for this user with this start time
 				Util::log( "WARNING a trip for user {$user->id} starting at {$start} has already been saved" );
-				Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
+	
 				header("HTTP/1.1 202 Accepted");
 				$response = new stdClass;
 				$response->status = 'success';
@@ -298,8 +297,6 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 				// TODO: remove, this is just for testing upload UI
 				sleep(2);
 				
-				Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
-
 				header("HTTP/1.1 201 Created");
 				$response = new stdClass;
 				$response->status = 'success';
@@ -315,8 +312,6 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 }
 else
 	Util::log( "ERROR failed to save trip, invalid device" );
-
-Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
 
 header("HTTP/1.1 500 Internal Server Error");
 $response = new stdClass;
