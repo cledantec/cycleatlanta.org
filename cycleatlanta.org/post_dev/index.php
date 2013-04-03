@@ -13,7 +13,6 @@ define( 'PROTOCOL_VERSION_3', 3 );
 
 Util::log( "+++++++++++++ Development: New Upload +++++++++++++");
 
-/*
 Util::log ( "++++ HTTP Headers ++++" );
 $headers = array();
 foreach($_SERVER as $key => $value) {
@@ -26,7 +25,6 @@ foreach($_SERVER as $key => $value) {
     //$headers[$header] = $value;
 }
 Util::log ( "++++++++++++++++++++++" );   
-*/
 
 <<<<<<< HEAD
 $version = isset( $_POST['version'] )    ? $_POST['version']    : null; 
@@ -104,6 +102,18 @@ elseif ( $version == PROTOCOL_VERSION_3) {
 >>>>>>> attempt to decompress and manually parse POST body if protocol version 3
 }
 
+
+/* Util::log( $coords );
+Util::log( $purpose );
+Util::log( $device );
+Util::log( strlen( $device ) );
+*/
+
+Util::log( "user data:" );
+Util::log( $userData );
+
+// TODO: require valid user agent
+
 // validate device ID
 if ( is_string( $device ) && strlen( $device ) === 32 )
 {
@@ -169,21 +179,12 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 			$coord = null;
 			if ( $version == PROTOCOL_VERSION_3 )
 				{
-					foreach ( $coords as $coord )
-				{ //( $trip_id, $recorded, $latitude, $longitude, $altitude=0, $speed=0, $hAccuracy=0, $vAccuracy=0 )
-					CoordFactory::insert(   $trip->id, 
-											$coord->r, //recorded timestamp
-											$coord->l, //latitude
-											$coord->n, //longitude
-											$coord->a, //altitude
-											$coord->s, //speed
-											$coord->h, //haccuracy
-											$coord->v ); //vaccuracy
-				}
-
-				// get the last coord's recorded => stop timestamp
-				if ( $coord && isset( $coord->rec ) )
-					$stop = $coord->rec;
+					Util::log("This is where the magic would happen");
+					header("HTTP/1.1 201 Created");
+					$response = new stdClass;
+					$response->status = 'success';
+					echo json_encode( $response );
+					exit;
 				}
 			else if ( $version == PROTOCOL_VERSION_2 )
 			{
