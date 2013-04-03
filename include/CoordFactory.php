@@ -54,13 +54,17 @@ class CoordFactory
 			$query .= "trip_id='" . $db->escape_string( $trip_id ) . "'";
 		}
 		$query .= " ORDER BY trip_id ASC, recorded ASC";
-		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+		/*
+Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 			': memory_usage = ' . memory_get_usage(True));
+*/
 
 		if ( ( $result = $db->query( $query ) ) && $result->num_rows )
 		{
-		  Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+		  /*
+Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 				' returned ' . $result->num_rows .' rows: memory_usage = ' . memory_get_usage(True));
+*/
 
 			// if the request was for an array of trip_ids then just return the $result class
 			// (I know, this is not very OO but putting it all in a structure in memory is no good either
@@ -74,8 +78,10 @@ class CoordFactory
 
 			$result->close();
 		}
-		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+		/*
+Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 			' RET2: memory_usage = ' . memory_get_usage(True));
+*/
 
 		return json_encode($coords);
 	}

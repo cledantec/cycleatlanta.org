@@ -1,4 +1,4 @@
--- Cycle Altanta data model for bike modeling contract
+-- Cycle Altanta data model
 -- Christopher Le Dantec
 -- 01.12.2013
 
@@ -14,7 +14,7 @@ CREATE TABLE trip (
 	UNIQUE KEY ( user_id, start )
 ) ENGINE=INNODB;
 
-CREATE TABLE flagged_location (
+CREATE TABLE note (
 	id        INTEGER UNSIGNED AUTO_INCREMENT,
 	user_id   INTEGER UNSIGNED,
 	trip_id   INTEGER UNSIGNED,
@@ -25,7 +25,7 @@ CREATE TABLE flagged_location (
 	speed     DOUBLE,
 	hAccuracy DOUBLE,
 	vAccuracy DOUBLE,
-	flag_type TINYINT,
+	note_type TINYINT,
 	details   VARCHAR(255),
 	image_url VARCHAR(255),	
 	PRIMARY KEY ( id ),
@@ -48,6 +48,7 @@ CREATE TABLE user (
 	id        INTEGER UNSIGNED AUTO_INCREMENT,
 	created   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	device    VARCHAR(32),
+	app_version  VARCHAR(32),
 	email     VARCHAR(64),
 	age       TINYINT,
 	gender    TINYINT,
@@ -111,7 +112,7 @@ CREATE TABLE rider_history (
 	PRIMARY KEY ( id )
 ) ENGINE=INNODB;
 
-CREATE TABLE flag_type (
+CREATE TABLE note_type (
 	id   TINYINT,
 	text VARCHAR(32),
 	PRIMARY KEY ( id )
@@ -166,6 +167,15 @@ INSERT INTO rider_history ( id, text ) VALUES ( 2, "Several years" );
 INSERT INTO rider_history ( id, text ) VALUES ( 3, "One year or less" );
 INSERT INTO rider_history ( id, text ) VALUES ( 4, "Just trying it out / just started" );
 
-INSERT INTO flag_type ( id, text ) VALUES ( 0, "issue" );
-INSERT INTO flag_type ( id, text ) VALUES ( 1, "asset" );
-
+INSERT INTO note_type ( id, text ) VALUES (0, 'Pavement issue');
+INSERT INTO note_type ( id, text ) VALUES (1, 'Traffic signal');
+INSERT INTO note_type ( id, text ) VALUES (2, 'Enforcement');
+INSERT INTO note_type ( id, text ) VALUES (3, 'Bike parking');
+INSERT INTO note_type ( id, text ) VALUES (4, 'Bike lane issue');
+INSERT INTO note_type ( id, text ) VALUES (5, 'Note this issue');
+INSERT INTO note_type ( id, text ) VALUES (6, 'Bike parking');
+INSERT INTO note_type ( id, text ) VALUES (7, 'Bike shops');
+INSERT INTO note_type ( id, text ) VALUES (8, 'Public restrooms');
+INSERT INTO note_type ( id, text ) VALUES (9, 'Secret passage');
+INSERT INTO note_type ( id, text ) VALUES (10, 'Water fountain');
+INSERT INTO note_type ( id, text ) VALUES (11, 'Note this asset');

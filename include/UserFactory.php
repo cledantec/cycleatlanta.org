@@ -66,7 +66,8 @@ class UserFactory
 		$db = DatabaseConnectionFactory::getConnection();
 
 		$update = '';
-
+		
+		$noAppVersion = true;
 		//$fields = (array) $old;
 		foreach ( $new->getPersonalInfo() as $key => $value )
 		{
@@ -86,10 +87,17 @@ class UserFactory
 					//add the email address to the email table as well
 					self::addEmail( $value );						
 					
+				}
+				if($key == 'app_version'){
+					$noAppVersion = false;
 				}			
 			}
 		}
-
+		if($noAppVersion){
+			if ( !empty( $update ) )
+					$update .= ', ';
+			$update .= "app_version='1.0'";
+		}
 		// sanity check - ensure we have at least one field to update
 		// and a valid user.id to work with
 		if ( $update && isset( $old->id ) && $old->id )

@@ -119,7 +119,7 @@ class TripFactory
 
 		if ( $db->query( $query ) ) 
 		{
-			Util::log( __METHOD__ . "() updated trip {$id}: {$query}" );
+			Util::log( __METHOD__ . "() updated trip {$id}" );
 			return self::getTrip( $id );
 		}
 		else
@@ -133,6 +133,21 @@ class TripFactory
 		$trip_ids = array();
 
 		$query = "SELECT id FROM trip";
+
+		$result = $db->query( $query );		
+		while ( $trip = $result->fetch_object( self::$class ) )
+				$trip_ids[] = $trip;
+
+		$result->close();
+		 
+		return json_encode($trip_ids);
+	}
+	
+	public static function getTripIdsByNotes($tag){
+		$db = DatabaseConnectionFactory::getConnection();
+		$trip_ids = array();
+
+		$query = "SELECT id FROM trip WHERE notes LIKE '%{$tag}%'";
 
 		$result = $db->query( $query );		
 		while ( $trip = $result->fetch_object( self::$class ) )
