@@ -1,17 +1,18 @@
 <?php
 
-class Note
+class FlaggedLocation
 {
-	public $id;			// note id
-	public $user_id;	// user id
-	public $recorded;	// timestamp
+	public $id;
+	public $trip_id;
+	public $user_id;
+	public $recorded;
 	public $latitude;
 	public $longitude;
 	public $altitude;
 	public $speed;
 	public $hAccuracy;
 	public $vAccuracy;
-	public $note_type;
+	public $flag_type;
 	public $details;
 	public $image_url;
 }
