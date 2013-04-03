@@ -7,23 +7,6 @@ require_once('CoordFactory_dev.php');
 define( 'DATE_FORMAT',        'Y-m-d h:i:s' );
 define( 'PROTOCOL_VERSION_1', 1 );
 define( 'PROTOCOL_VERSION_2', 2 );
-define( 'PROTOCOL_VERSION_3', 3 );
-
-Util::log( "+++++++++++++ Development: New Upload +++++++++++++");
-
-Util::log ( "++++ HTTP Headers ++++" );
-$headers = array();
-foreach($_SERVER as $key => $value) {
-    if (substr($key, 0, 5) <> 'HTTP_') {
-        continue;
-    }
-    $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
-    
-    Util::log ( "{$header}: {$value}" );
-    //$headers[$header] = $value;
-}
-Util::log ( "++++++++++++++++++++++" );   
-
 
 $coords   = isset( $_POST['coords'] )  ? $_POST['coords']  : null; 
 $device   = isset( $_POST['device'] )  ? $_POST['device']  : null; 
@@ -31,36 +14,22 @@ $notes    = isset( $_POST['notes'] )   ? $_POST['notes']   : null;
 $purpose  = isset( $_POST['purpose'] ) ? $_POST['purpose'] : null; 
 $start    = isset( $_POST['start'] )   ? $_POST['start']   : null; 
 $userData = isset( $_POST['user'] )    ? $_POST['user']    : null; 
-$version = isset( $_POST['version'] )    ? $_POST['version']    : null; 
+$version  = isset( $_POST['version'] ) ? $_POST['version'] : null; 
 
-Util::log ( "version: {$version}");
-
-function gzdecode($data) 
-{ 
-    return gzinflate(substr($data,10,-8)); 
-} 
-
-if ( $version == PROTOCOL_VERSION_3 && $coords != null){
-	//try unzipping
-	Util::log( "Should have binary coords: {$coords}" );
-	
-//	Util::log( "decode base64 and unzip:" );
-//	$decoded_coords = base64_decode($coords);
-	$inflated_coords = gzdecode($coords);
-	Util::log( "inflated coords data: {$inflated_coords}" );
-}
 /*
 Util::log( $coords );
 Util::log( $purpose );
 Util::log( $device );
 Util::log( strlen( $device ) );
 */
-
-Util::log( "POST data:" );
-Util::log( $_POST );
-
+Util::log( "+++++++++++++ App Dev +++++++++++++")
 Util::log( "user data:" );
 Util::log( $userData );
+
+/*
+Util::log( "POST data:" );
+Util::log( $_POST );
+*/
 
 Util::log( "protocol version = {$version}" );
 
@@ -130,16 +99,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		if ( $trip = TripFactory::insert( $user->id, $purpose, $notes, $start ) )
 		{
 			$coord = null;
-			if ( $version == PROTOCOL_VERSION_3 )
-				{
-					Util::log("This is where the magic would happen");
-					header("HTTP/1.1 201 Created");
-					$response = new stdClass;
-					$response->status = 'success';
-					echo json_encode( $response );
-					exit;
-				}
-			else if ( $version == PROTOCOL_VERSION_2 )
+			if ( $version == PROTOCOL_VERSION_2 )
 			{
 				foreach ( $coords as $coord )
 				{
