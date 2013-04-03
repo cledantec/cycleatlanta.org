@@ -13,7 +13,6 @@ define( 'PROTOCOL_VERSION_2', 2 );
 define( 'PROTOCOL_VERSION_3', 3 ); // this is for uploading the trip data (compressed)
 define( 'PROTOCOL_VERSION_4', 4 ); // this is for uploading the note data (compressed)
 
-Util::log( " ");
 Util::log( "+++++++++++++ Development: Upload Start +++++++++++++");
 
 
@@ -295,6 +294,9 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 				}
 				else
 					Util::log( "WARNING failed to update trip {$trip->id} stop, n_coord" );
+				
+				// TODO: remove, this is just for testing upload UI
+				sleep(2);
 				
 				Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
 
