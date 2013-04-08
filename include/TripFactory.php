@@ -128,6 +128,23 @@ class TripFactory
 		return false;
 	}
 	
+	public static function getTripAttrsByFilteredUser($filter){
+		$db = DatabaseConnectionFactory::getConnection();
+		
+		$trip_ids = array();
+
+		$query = "SELECT trip.id,age,gender,ethnicity,rider_type,cycling_freq.text,purpose FROM trip LEFT JOIN (user,cycling_freq) ON (user.id=trip.user_id AND user.cycling_freq=cycling_freq.id) WHERE trip.id IN (SELECT trip.id FROM trip WHERE user_id IN(SELECT user.id FROM user " . $db->escape_string($filter) . ") ) ORDER BY trip.id ASC";
+
+		Util::log(  __METHOD__ . "() with query: {$query}" );
+		$result = $db->query( $query );		
+		while ( $trip = $result->fetch_array())
+				$trip_ids[] = $trip;
+
+		$result->close();
+		 
+		return json_encode($trip_ids);
+	}
+	
 	public static function getTripIds(){
 		$db = DatabaseConnectionFactory::getConnection();
 		$trip_ids = array();

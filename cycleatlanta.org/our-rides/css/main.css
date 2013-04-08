@@ -1,0 +1,133 @@
+/* ==========================================================================
+   Custom styles
+   
+   @author: Christopher Le Dantec, ledantec@gatech.edu
+   ========================================================================== */
+
+body{
+
+}
+
+#controls {
+	position: relative;
+	z-index: 20;
+	top: -920px;
+	left: 9px;
+	width: 18px;
+	padding: 15px 5px 15px 5px;
+	border-radius: 5px;
+	background-color: rgba(180,180,180,0.7);
+}
+#slider { 
+	margin-left: 2px; 
+/*
+	height: 10px;
+	width: 200px;
+	padding: 0 100px 0 100px;
+*/
+}
+
+#status{
+	visibility: hidden;
+	position:absolute;
+	top: 40%;
+	left: 35%;
+	padding: 20px;
+	font-size: 24px;
+	font-weight: bold;
+	color: #fff;
+	border-radius: 5px;
+	background-color: rgba(227,76,37,0.9);
+	border:2px solid #fff;
+	z-index:100;
+}
+#mapBody {	width: 100%; 
+		height: 910px; 
+		position: relative;  
+		background-color: #fff;
+	}
+
+.navbar-fixed-top{
+	background-color: color: rgb(13,85,135);
+}
+
+.cycleAtl_title {
+	padding-top: 10px;
+	font-weight: 400;
+	color: #fff;
+	font-size: 24px;
+}
+
+.trip_count, .trip_total {
+	font-weight: 600;
+}
+
+/*
+	form styles
+*/
+#form{
+	position:relative;
+	z-index: 10;
+	top:-1115px;
+	left:-20px;
+	color:#fff;
+	border-radius: 5px;
+	background-color: rgba(13,85,135,0.7);
+	padding: 15px 15px 0px 5px;
+	border: 2px solid #fff;
+	float:right;
+	
+}
+
+#form li{
+	list-style-type:none;
+}
+
+#form li label.description{
+	margin-top:10px;
+	margin-left: -10px;
+	font-weight: bold;
+}
+
+#form li span label.choice{
+	color:#fff;
+	font-size: 12px;
+	padding:0;
+}
+
+#form li.buttons{
+	margin-top: 10px;
+}
+
+.form_description p{
+	font-weight: bold;
+	margin-left:15px;
+}
+
+select{
+	width: 130px;
+	height: 20px;
+	font-size: 12px;
+	line-height: 1em;
+}
+
+input.checkbox
+{
+	display:block;
+	height:13px;
+	line-height:1.1em;
+	margin:6px 0 0 3px;
+	width:13px;
+}
+
+label.choice
+{
+	color:#444;
+	display:block;
+	font-size:100%;
+	line-height:1em;
+	margin:-1.1em 0 0 25px;
+	padding:5px 0 5px;
+	width:85%;
+	border:solid 1px rgba(255,255,255,0);
+}
