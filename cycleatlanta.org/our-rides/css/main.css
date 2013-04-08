@@ -5,18 +5,67 @@
    ========================================================================== */
 
 body{
+    padding-top: 60px;
+    padding-bottom: 40px;
+    background-color: #f5f5f5;
+    font-family: Myriad Pro, Verdana;
+}
 
+a:link {
+	font-weight: 400;
+	text-decoration: none;	
+	color: rgba(25,142,226,1);
+}
+
+a:visited {
+	font-weight: 400;
+	text-decoration: underline;	
+	color: #9d371e;
+}
+
+a:hover{
+	font-weight: 400;
+	text-decoration: underline;	
+	color: #e34c25;
+}
+
+#mapBody {	
+	float: left;
+	z-index: 0;
+	width: 100%; 
+	height: 920px; 
+	background-color: #fff;
+	margin-bottom: 20px;
+}
+
+#controlContainer{
+	position: absolute;
+	z-index: 1000;
+	width: 1170px;
+	height:920px;
+	float:left;
+	margin: 0;
+	pointer-events:none;
+	-moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    -moz-box-shadow:    inset 0 0 6px #999;
+    -webkit-box-shadow: inset 0 0 6px #999;
+    box-shadow:         inset 0 0 6px #999;
+    border:1px solid #f3f3f3;
+    border-radius: 5px;
 }
 
 #controls {
-	position: relative;
-	z-index: 20;
-	top: -920px;
-	left: 9px;
+	/* position: relative; */
+/* 	top: -920px; */
 	width: 18px;
 	padding: 15px 5px 15px 5px;
 	border-radius: 5px;
-	background-color: rgba(180,180,180,0.7);
+	background-color: rgba(227,76,37,0.5);
+	margin: 80px 0 0 10px;
+	float:left;
+	pointer-events: all;
 }
 #slider { 
 	margin-left: 2px; 
@@ -34,49 +83,60 @@ body{
 	left: 35%;
 	padding: 20px;
 	font-size: 24px;
-	font-weight: bold;
+	font-weight: 600;
 	color: #fff;
 	border-radius: 5px;
-	background-color: rgba(227,76,37,0.9);
-	border:2px solid #fff;
+	background-color: rgba(227,76,37,0.7);
+	border:1px solid #fff;
 	z-index:100;
 }
-#mapBody {	width: 100%; 
-		height: 910px; 
-		position: relative;  
-		background-color: #fff;
-	}
 
-.navbar-fixed-top{
-	background-color: color: rgb(13,85,135);
+
+
+.navbar-fixed-top {
+	background-color: rgba(227,76,37,0.9); /* #f5f5f5; */
+	border-bottom: 1px solid #f3f3f3;
+	box-shadow: 0 0 6px #999;
+	height: 60px;
+	margin-bottom:20px;
+	font-weight: normal;
+	font-weight: lighter;
 }
 
 .cycleAtl_title {
-	padding-top: 10px;
-	font-weight: 400;
-	color: #fff;
+	padding-top: 20px;
+	font-weight: normal;
+	color: #fff;/* rgb(13,85,135); */
+	font-size: 48px;
+}
+
+.smallText{
 	font-size: 24px;
+	color: #fff;
+	margin-left: 1.5em;
 }
 
 .trip_count, .trip_total {
 	font-weight: 600;
 }
 
+#top{
+	font-size: 16px;
+	margin-top:20px;
+}
+
 /*
 	form styles
 */
 #form{
-	position:relative;
-	z-index: 10;
-	top:-1115px;
-	left:-20px;
+	float:right;
 	color:#fff;
 	border-radius: 5px;
 	background-color: rgba(13,85,135,0.7);
 	padding: 15px 15px 0px 5px;
 	border: 2px solid #fff;
-	float:right;
-	
+	margin: 10px 10px;
+	pointer-events: all;
 }
 
 #form li{
@@ -96,12 +156,29 @@ body{
 }
 
 #form li.buttons{
-	margin-top: 10px;
+	margin: 10px auto auto 20px;
+	
+}
+
+p.bottom {
+	font-size: 16px;
 }
 
 .form_description p{
+	font-size: 16px;
 	font-weight: bold;
 	margin-left:15px;
+}
+
+#missingAttrib{
+	visibility: hidden;
+	color: #fff;
+	font-size: 10px;
+	background-color: #909291;
+	border: 1px solid #fff;
+	border-radius: 2px;
+	margin:0;
+	padding: 0 3px 0 3px;
 }
 
 select{

@@ -1,12 +1,11 @@
-@import url(http://fonts.googleapis.com/css?family=Alegreya:400,700|Hammersmith+One);
-
 body {
-	margin: 0px;
-	padding: 0px;
+    padding-top: 60px;
+    padding-bottom: 40px;
 /* 	background-image: url('../images/background.png'); */
 	background-color: #f5f5f5;
 	font-size: 16px;
 }
+
 h1 {
 	font-family: Myriad Pro, Verdana;
 	font-weight: 600;
@@ -74,13 +73,13 @@ p, li{
 	font-size: 16px;
 	line-height: 1.8em;
 	color: #151515;
-
+	margin-bottom: 3em;
 }
 
 p.small{
-		font-size: 14px;
-		line-height: 1.8em;
-		margin-bottom: 20px;
+	font-size: 14px;
+	line-height: 1.8em;
+	margin-bottom: 20px;
 }
 
 p.stayInTouch{
@@ -111,8 +110,10 @@ span.largeText{
 }
 
 #content{
-	width: 900px;
-	margin: 40px auto auto 50px;
+	width: 1150px;
+	margin: 0 auto;
+	margin-top: 20px;
+	
 }
 
 #help_content{
@@ -161,9 +162,9 @@ span.largeText{
 }
 
 #intro{
-	width:60%;
+	width:820px;
 	float:right;
-	padding: 15px;
+	padding: 0px;
 	margin-top:0px;
 	margin-bottom: 10px;
 	background-color: rgba(255,255,255,.0);
@@ -177,8 +178,7 @@ span.largeText{
 
 #side{
 	width: 306px;
-	float: left;
-	
+	float: left;	
 }
 
 div#download{
@@ -232,7 +232,7 @@ div#partners, div#contact{
 }
 
 #partners img{
-	padding:5px;
+	padding:0px;
 }
 
 #partners .gt{
@@ -293,4 +293,30 @@ table.storeIcons{
 	text-align: center;
 	padding: 3px;
 	background-color: #e34c25;
+}
+
+/* And so the cruft accumulates... */
+
+.navbar-fixed-top {
+	background-color: rgba(227,76,37,0.9); /* #f5f5f5; */
+	border-bottom: 1px solid #f3f3f3;
+	box-shadow: 0 0 6px #999;
+	height: 60px;
+	margin-bottom:20px;
+	font-weight: normal;
+	font-weight: lighter;
+}
+
+.cycleAtl_title {
+	padding-top: 0px;
+	margin-top: -13px;
+	font-weight: normal;
+	color: #fff;/* rgb(13,85,135); */
+	font-size: 48px;
+}
+
+.smallText{
+	font-size: 24px;
+	color: #fff;
+	margin-left: 1.5em;
 }
