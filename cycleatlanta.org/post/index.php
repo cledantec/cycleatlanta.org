@@ -272,7 +272,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		Util::log( "ERROR failed to save trip, invalid user" );
 }
 else
-	Util::log( "ERROR failed to save trip, invalid device" );
+	Util::log( "ERROR failed to save trip, invalid device: {$device}" );
 
 Util::log( "+++++++++++++ Production: Upload Finished ++++++++++");
 

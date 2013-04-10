@@ -39,6 +39,9 @@ class CoordFactory
 	{
 		$db = DatabaseConnectionFactory::getConnection();
 		$coords = array();
+		$skipTrips = array();
+		$latLongMinThreshold = .007; //delta must be more than 7m
+		$latLongMaxThreshold = .1; //delta must be less than 200m (or whole trip is ignored).
 		$query = "SELECT * FROM coord WHERE ";
 	    if (is_array($trip_id)) {
 	      $first = True;
@@ -64,21 +67,46 @@ class CoordFactory
 
 			// if the request was for an array of trip_ids then just return the $result class
 			// (I know, this is not very OO but putting it all in a structure in memory is no good either
-			// cL note: not clear this will work over JSON.
 			if (is_array($trip_id)) {
 				return $result;			
 			}
-
-
-			while ( $coord = $result->fetch_object( self::$class ) )
-				$coords[] = $coord;
-
+			$skipTrip = null;
+			$last = null;
+			while ( $coord = $result->fetch_object( self::$class ) ){
+				//test for same trip
+				if($skipTrip && $coord->trip_id == $skipTrip->trip_id){
+					//no-op, this is a trip to skip
+				}else{
+					$skipTrip = null;
+					if($last && $coord->trip_id == $last->trip_id){
+						if( Util::latlongPointDistance($last->latitude, $last->longitude, $coord->latitude, $coord->longitude) >= $latLongMinThreshold ){
+							$coords[] = $coord;
+						}
+						if( Util::latlongPointDistance($last->latitude, $last->longitude, $coord->latitude, $coord->longitude) >= $latLongMaxThreshold ){
+							$skipTrip = $coord;
+							$skipTrips = $coord->trip_id;
+							for($i=count($coords)-1;$i >=0 ; $i--){
+								//start at the end of the array, remove items until we get to the previous trip
+								if($coords[$i]->trip_id == $skipTrip->trip_id){
+									array_pop($coords);	
+								}else{
+									break;
+								}
+							}
+						}	
+					}else{ 
+						$coords[] = $coord;						
+					}
+				}
+				$last = $coord;
+			}
 
 			$result->close();
 		}
-
+		$result = null;
 		Util::log( __METHOD__ . "() with query " . $query . " of length " . strlen($query) . 
 			' RET2: memory_usage = ' . memory_get_usage(True));
+		Util::log("Trips to skip ".count($skipTrips));
 
 
 		return json_encode($coords);

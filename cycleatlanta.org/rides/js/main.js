@@ -14,7 +14,7 @@ var mapTileLayer = new L.TileLayer(stamenUrl, {maxZoom: 18, attribution: stamenA
 map.addLayer(mapTileLayer);
 var tripsLayer = new L.LayerGroup().addTo(map);
 
-$(".leaflet-control-zoom").css("background-color","rgba(227,76,37,0.5)");
+$(".leaflet-control-zoom").css("background-color","rgba(13,85,135,0.7)"); //orange:rgba(227,76,37,0.5)
 var tilesVisible = true;
 
 var loadedTrips = new Array();
@@ -23,10 +23,10 @@ var visibleTrips = new Array();
 var r_depth = 0; //keep track of recursion depth for status updates
 var tripCount = 1;
 var colorArray = ['#909291', '#C84140', '#3C6E9C', '#70A35C', '#EEAE53', '#82538B', '#71D6D6', '#C5AACF', '#B6EF9F'];
-//array order: white, red, blue, green, orange, purple, shopping, l.purple, grey
+//array order: grey, red, blue, green, orange, purple, shopping, l.purple, grey
 var showColors = "none";
 
-var LOAD_CHUNK = 8; // constant for how many trips to fetch at a time.
+var LOAD_CHUNK = 35; // constant for how many trips to fetch at a time.
 
 function tileOpacity (alpha){
 	mapTileLayer.setOpacity(alpha);
@@ -43,14 +43,14 @@ $('#ca_data_selector').submit(function() {
 	r_depth = 0;
 	
 	//more generous searches, will pull lots more data.	
-	/*
+/*
 	if(0 === $('input:checkbox:checked').size()){
 		alert('You must select at least one attribute to begin loading data.');
 		return false;
 	    // Error condition
     }
-    */
-
+*/
+   
     //more restricted searchers as only pulls data with something in each category
 	if(0 === $('input:checkbox.rider_type:checked').size() ||
 	   0 === $('input:checkbox.gender:checked').size() ||
@@ -59,7 +59,6 @@ $('#ca_data_selector').submit(function() {
 	   0 === $('input:checkbox.trip_purpose:checked').size()){
 		alert('You must select at least one item from each category.');
 		return false;
-	    // Error condition
     }
 	
 	$('input:checkbox.rider_type').each(function () {
@@ -111,9 +110,7 @@ $('#ca_data_selector').submit(function() {
 		else query += "WHERE age IN ("+age+") ";
 	}
 	
-	//alert(query);	
 	$('input[type="submit"]').attr('disabled','disabled');
-
 	visibleTrips = new Array();
 	updatePolylines();
 	$('#status').text("Updating map...");
@@ -154,9 +151,9 @@ function getFilteredTrips(query, purpose) {
 			$('#status').text("Loading " + tripsToFetch.length + " trips...");
 			$('#status').css("visibility", "visible");					
 			//get the data for new trips.
-			if(tripsToFetch.length>0)
+			if(tripsToFetch.length>0){			
 				getTripData(tripsToFetch);
-			else {
+			}else {
 				$('input[type="submit"]').removeAttr('disabled');
 				$('#status').css("visibility", "hidden");				
 			}
@@ -211,7 +208,7 @@ function getTripData(tripArray){
 function drawPolylines(tripData, tripsToDraw, reload) {
 	var latlng;
 	var	latlngs = new Array();
-	var pathColor='red';
+	var pathColor='#E34C25';
 	var workingTrip = "";	
 	if(!tripsToDraw){
 		//do this when dealing with a fresh ajax return, we know this is meant to be visible
@@ -220,7 +217,7 @@ function drawPolylines(tripData, tripsToDraw, reload) {
 				if (latlngs.length>0){
 					//add the previous, completed polyline, color coded if needed
 					pathColor = setPolylineColor (loadedTrips[workingTrip]);				
-					loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 5});
+					loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 					tripsLayer.addLayer(loadedTrips[workingTrip].path);
 					$('.trip_count').text(tripCount++);
 				}
@@ -233,7 +230,7 @@ function drawPolylines(tripData, tripsToDraw, reload) {
 		}
 		//add the last polyline
 		pathColor = setPolylineColor (loadedTrips[workingTrip]);
-		loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 5});
+		loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 		tripsLayer.addLayer(loadedTrips[workingTrip].path);
 		$('.trip_count').text(tripCount++);
 	}else{
@@ -242,7 +239,7 @@ function drawPolylines(tripData, tripsToDraw, reload) {
 			if(tripData[tripsToDraw[i]].path){
 				pathColor = setPolylineColor (loadedTrips[tripsToDraw[i]]);
 				//recreate the polyline based on previous line's latlngs...?
-				tripData[tripsToDraw[i]].path = L.polyline(tripData[tripsToDraw[i]].path._latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 5});
+				tripData[tripsToDraw[i]].path = L.polyline(tripData[tripsToDraw[i]].path._latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 				tripsLayer.addLayer(tripData[tripsToDraw[i]].path);	
 				$('.trip_count').text(tripCount++);		
 			}
@@ -263,9 +260,7 @@ function updatePolylines(reload){
 function setPolylineColor (currentTrip){
 	
 	if(showColors=="gender"){
-		if(currentTrip.trip.gender==0) return colorArray[0];
-		if(currentTrip.trip.gender==1) return colorArray[2];
-		if(currentTrip.trip.gender==2) return colorArray[1];
+		return colorArray[currentTrip.trip.gender];
 	}else if (showColors=="ethnicity"){
 		return colorArray[currentTrip.trip.ethnicity];
 	}else if (showColors=="age"){
@@ -295,16 +290,9 @@ function changeColor(tripCategory){
 	var checkboxes = document.getElementsByTagName("input");
 	for(var i = 0; i < checkboxes.length; i++){
 		if(checkboxes[i].type == "checkbox"){
-			if(checkboxes[i].className.indexOf(showColors)!=-1){
-				//reverse male/female colors
-				if(showColors=="gender"){
-					document.getElementById("label_"+checkboxes[i].id).setAttribute("style", "background-color: " + colorArray[2] +"; border: 1px solid #fff; border-radius: 2px;");
-					i++; //do the next one too
-					document.getElementById("label_"+checkboxes[i].id).setAttribute("style", "background-color: " + colorArray[1] +"; border: 1px solid #fff; border-radius: 2px;");					
-				}else{
-					document.getElementById("label_"+checkboxes[i].id).setAttribute("style", "background-color: " + colorArray[colorIndex] +"; border: 1px solid #fff; border-radius: 2px;");			
-					colorIndex++;	
-				}
+			if(checkboxes[i].className.indexOf(showColors)!=-1){				
+				document.getElementById("label_"+checkboxes[i].id).setAttribute("style", "background-color: " + colorArray[colorIndex] +"; border: 1px solid #fff; border-radius: 2px;");			
+				colorIndex++;				
 			} else {
 				document.getElementById("label_"+checkboxes[i].id).setAttribute("style", "background-color: none; border: 1px solid rgba(255,255,255,0); border-radius: 2px;");
 			}

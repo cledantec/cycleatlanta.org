@@ -37,12 +37,12 @@
 
         <div class="navbar-fixed-top">
             <div class="container">
-                <p class="cycleAtl_title">Cycle Atlanta <span class="smallText">Mapping our rides for a better Atlanta.</span></p>
+                <p class="cycleAtl_title">Cycle Atlanta <span class="smallText">Mapping the ride to a better Atlanta.</span></p>
             </div>
         </div>
 
         <div class="container"> 
-        	<div id="top"><p>Visualizing <span class="trip_count"></span> trips collected by users of the <a href="http://cycleatlanta.org">Cycle Atlanta apps</a>. Select attributes you wish to view and click "Update the map!" below.</p></div>
+        	<div id="top"><p>Visualizing <span class="trip_count"></span> rides collected by users of the <a href="http://cycleatlanta.org">Cycle Atlanta apps</a>. <span class="right">Select attributes you wish to view and click "Update the map!" below.</span></p></div>
             <div id="mapBody"></div>
             <div id="controlContainer">
 	            <div id="status">Fetching data...</div>
@@ -54,7 +54,7 @@
 						</div>						
 						<ul >
 							<li id="rider_type" >
-								<label class="description" for="trip_purpose">Trip Purpose</label>
+								<label class="description" for="trip_purpose">Ride Purpose</label>
 								<span>
 									<input id="trip_purpose_1" name="trip_purpose_1" class="element checkbox trip_purpose" type="checkbox" value="Commute" checked/>
 									<label class="choice" id="label_trip_purpose_1" for="rider_type_1">Commute</label>
@@ -88,10 +88,10 @@
 							<li id="gender" >
 								<label class="description" for="gender">Gender</label>
 								<span>
-									<input id="gender_1" name="gender_1" class="element checkbox gender" type="checkbox" value="2" checked/>
-									<label class="choice" id="label_gender_1" for="gender_1">Male</label>
-									<input id="gender_2" name="gender_2" class="element checkbox gender" type="checkbox" value="1" checked/>
-									<label class="choice" id="label_gender_2" for="gender_2">Female</label>
+									<input id="gender_1" name="gender_1" class="element checkbox gender" type="checkbox" value="1" checked/>
+									<label class="choice" id="label_gender_1" for="gender_1">Female</label>
+									<input id="gender_2" name="gender_2" class="element checkbox gender" type="checkbox" value="2" checked/>
+									<label class="choice" id="label_gender_2" for="gender_2">Male</label>
 								</span> 
 							</li>								
 							<li id="age" >
@@ -154,6 +154,7 @@
 				</div>
             </div>
             <p class="bottom">This website brought to you by researchers from the <a href="http://participatorypublicslab.net"> Participatory Publics Lab</a> at <a href="http://gatech.edu">Georgia Tech</a>.</p>
+            <div id="debug"></div>
 		</div> <!-- /container -->
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
