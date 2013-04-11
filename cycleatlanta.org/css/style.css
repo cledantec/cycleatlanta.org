@@ -73,7 +73,7 @@ p, li{
 	font-size: 16px;
 	line-height: 1.8em;
 	color: #151515;
-	margin-bottom: 3em;
+	margin-bottom: 1.8em;
 }
 
 p.small{
@@ -101,7 +101,7 @@ p.lede{
 	font-size: 24px;
 	line-height: 2em;
 	margin-top:10px;
-	margin-bottom:40px;
+	margin-bottom:30px;
 }
 
 span.largeText{
@@ -315,8 +315,20 @@ table.storeIcons{
 	font-size: 48px;
 }
 
+.cycleAtl_title a{
+	text-decoration: none;
+	color:#fff;
+	padding:2px 4px 2px 4px;
+}
+
+.cycleAtl_title a:hover{
+	text-decoration: none;
+	color:#fff;
+	background-color: rgba(255,255,255,.2);
+}
+
 .smallText{
 	font-size: 24px;
 	color: #fff;
-	margin-left: 1.5em;
+	margin-left: 60px;
 }

@@ -14,7 +14,7 @@ if($_POST['t']=="get_coords_by_trip"){
 	echo $obj->getTripIds();	
 } else if($_POST['t']=="get_filtered_users"){	
 	$obj = new TripFactory();	
-	echo $obj->getTripAttrsByFilteredUser($_POST['q']);
+	echo $obj->getTripAttrsByFilteredUser($_POST['demo'], $_POST['purpose']);
 } else {
 	//no-op
 }

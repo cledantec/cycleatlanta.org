@@ -1,6 +1,6 @@
 // create the map content
 var map = L.map('mapBody', {
-    center: [33.77, -84.372],
+    center: [33.77, -84.372], 
     zoom: 14
 });
 
@@ -18,10 +18,15 @@ $(".leaflet-control-zoom").css("background-color","rgba(13,85,135,0.7)"); //oran
 var tilesVisible = true;
 
 var loadedTrips = new Array();
-var loadedCoords = new Array();
 var visibleTrips = new Array();
+
+var riderType = "";
+var gender = ""
+var ethnicity = "";
+var age = "";
+var purpose = new Array();
+
 var r_depth = 0; //keep track of recursion depth for status updates
-var tripCount = 1;
 var colorArray = ['#909291', '#C84140', '#3C6E9C', '#70A35C', '#EEAE53', '#82538B', '#71D6D6', '#C5AACF', '#B6EF9F'];
 //array order: grey, red, blue, green, orange, purple, shopping, l.purple, grey
 var showColors = "none";
@@ -33,13 +38,14 @@ function tileOpacity (alpha){
 }
 
 $('#ca_data_selector').submit(function() {
-	var riderType = "";
-	var gender = ""
-	var ethnicity = "";
-	var age = "";
-	var purpose = new Array();
+	riderType = "";
+	gender = ""
+	ethnicity = "";
+	age = "";
+	purpose = new Array();
 	
-	var query = "";
+	var demoQuery = "";
+	var purposeQuery = "";
 	r_depth = 0;
 	
 	//more generous searches, will pull lots more data.	
@@ -95,62 +101,72 @@ $('#ca_data_selector').submit(function() {
 		}
 	});
 	
-	//generate the query string
-	if(riderType!="") query = "WHERE rider_type IN ("+riderType+") ";
+	//generate the demoQuery string
+	if(riderType!="") demoQuery = "WHERE rider_type IN ("+riderType+") ";
 	if(gender!=""){
-		if(query != "") query += "AND gender IN ("+gender+") ";
-		else query += "WHERE gender IN ("+gender+") ";
+		if(demoQuery != "") demoQuery += "AND gender IN ("+gender+") ";
+		else demoQuery += "WHERE gender IN ("+gender+") ";
 	}
 	if(ethnicity!=""){
-		if(query != "") query += "AND ethnicity IN ("+ethnicity+") ";
-		else query += "WHERE ethnicity IN ("+ethnicity+") ";
+		if(demoQuery != "") demoQuery += "AND ethnicity IN ("+ethnicity+") ";
+		else demoQuery += "WHERE ethnicity IN ("+ethnicity+") ";
 	}
 	if(age!=""){ 
-		if(query != "")query += "AND age IN ("+age+") ";
-		else query += "WHERE age IN ("+age+") ";
+		if(demoQuery != "")demoQuery += "AND age IN ("+age+") ";
+		else demoQuery += "WHERE age IN ("+age+") ";
+	}
+	//generate the purposeQuery
+	for(i=0; i < purpose.length; i++){
+		if(purposeQuery != "")	purposeQuery += ", ";
+		purposeQuery += "'" + purpose[i] + "'";
 	}
 	
 	$('input[type="submit"]').attr('disabled','disabled');
-	visibleTrips = new Array();
-	updatePolylines();
-	$('#status').text("Updating map...");
+	
+	//tripsToDraw = new Array ();
+	updatePolylines(0);
+	visibleTrips = new Array(); //must happen after updating polylines 
+	$('#statusMsg').text("Updating map...");
 	$('#status').css("visibility", "visible");
 	$('.trip_count').text("");	
-	tripCount=1;
-	getFilteredTrips(query, purpose);
+	getFilteredTrips(demoQuery, purposeQuery);
 	//prevent normal POST from occuring
 	return false;
 });
 
-function getFilteredTrips(query, purpose) {
+function getFilteredTrips(selectedDemo, selectedPurpose) {
 //	var self = Trips;
 	$.ajax({
 		url: 'getData.php',
 		type: 'POST',
 		data: {
 			t:'get_filtered_users',
-			q:query,
+			demo:selectedDemo,
+			purpose:selectedPurpose,
 			}, 
 		dataType: 'json',
-		success: function(results) {					
+		success: function(results) {	
+			console.log("Total trips to display: " + results.length);//HERE... simlify				
 			var tripsToFetch = new Array();		
 			var tripsToDraw = new Array();
 			//populate the loaded trips array, indexed on trip_id			
 			for(var i=0; i < results.length; i++){
-				if(!loadedTrips[results[i].id] && purpose.indexOf(results[i].purpose) != -1){
+				if(!loadedTrips[results[i].id]){
 					//trip not already loaded					
 					loadedTrips[results[i].id] = {trip : results[i], path : null};
 					tripsToFetch.push(results[i].id);					
-				}else if(purpose.indexOf(results[i].purpose) != -1){
+				}else{
 					//trip is loaded and will need to be drawn again
 					tripsToDraw.push(results[i].id);
 				}
 				//update overall visibleTrips array used for refreshing
 				visibleTrips.push(results[i].id);
-			}	
-			$('#status').text("Loading " + tripsToFetch.length + " trips...");
+			}
+			if(tripsToDraw.length>0) $('#statusMsg').text("Loading more rides...");
+			else $('#statusMsg').text("Loading rides...");
 			$('#status').css("visibility", "visible");					
 			//get the data for new trips.
+			console.log("Total new trips to fetch: " + tripsToFetch.length);
 			if(tripsToFetch.length>0){			
 				getTripData(tripsToFetch);
 			}else {
@@ -188,24 +204,29 @@ function getTripData(tripArray){
 			}, 
 		dataType: 'json',
 		success: function(results) {
-			drawPolylines(results);
+			if(results.length>0)
+				drawPolylines(results);
 			r_depth--;
-			if (r_depth==0){
+			if (r_depth <= 0){
 				$('#status').css("visibility", "hidden");
 				$('input[type="submit"]').removeAttr('disabled');
+			} else {
+				$('#statusMsg').text("Loading rides...");
 			}
 		},
 		error: function(){			
 			r_depth--;
-			if (r_depth==0){ 
+			if (r_depth <= 0){ 
 				$('#status').css("visibility", "hidden");
 				$('input[type="submit"]').removeAttr('disabled');
+			}else {
+				$('#statusMsg').text("Loading rides...");
 			}
 		}
 	});
 }
 
-function drawPolylines(tripData, tripsToDraw, reload) {
+function drawPolylines(tripData, tripsToDraw) {
 	var latlng;
 	var	latlngs = new Array();
 	var pathColor='#E34C25';
@@ -219,7 +240,6 @@ function drawPolylines(tripData, tripsToDraw, reload) {
 					pathColor = setPolylineColor (loadedTrips[workingTrip]);				
 					loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 					tripsLayer.addLayer(loadedTrips[workingTrip].path);
-					$('.trip_count').text(tripCount++);
 				}
 				latlngs = new Array();
 				workingTrip = tripData[i].trip_id;
@@ -232,7 +252,6 @@ function drawPolylines(tripData, tripsToDraw, reload) {
 		pathColor = setPolylineColor (loadedTrips[workingTrip]);
 		loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 		tripsLayer.addLayer(loadedTrips[workingTrip].path);
-		$('.trip_count').text(tripCount++);
 	}else{
 		//do this when updating the polylines, we need to only render visible lines, not all the data potentially pulled down.
 		for(var i=0; i<tripsToDraw.length; i++){
@@ -241,30 +260,32 @@ function drawPolylines(tripData, tripsToDraw, reload) {
 				//recreate the polyline based on previous line's latlngs...?
 				tripData[tripsToDraw[i]].path = L.polyline(tripData[tripsToDraw[i]].path._latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 				tripsLayer.addLayer(tripData[tripsToDraw[i]].path);	
-				$('.trip_count').text(tripCount++);		
 			}
 		}
 	}
-	if(reload) 	$('#status').css("visibility", "hidden");
-	
 }
 
-function updatePolylines(reload){
-	tripsLayer.clearLayers();
-	if(visibleTrips.length!=0){
-		drawPolylines(loadedTrips, visibleTrips, reload);
+function updatePolylines(lineOpacity){
+	if(visibleTrips.length>0){
+		for(i=1; i<visibleTrips.length; i++){	
+			if(	loadedTrips[visibleTrips[i]].path ){
+				pathColor = setPolylineColor(loadedTrips[visibleTrips[i]]);
+				loadedTrips[visibleTrips[i]].path.setStyle({color:pathColor, opacity: lineOpacity}); 						
+			}
+		}
 	}
+	if(r_depth <= 0) //just in case some updates the color while stuff is downloading.
+		$('#status').css("visibility", "hidden");
 }
 
 //returns the color to use based on current color-coding selection
 function setPolylineColor (currentTrip){
-	
 	if(showColors=="gender"){
 		return colorArray[currentTrip.trip.gender];
 	}else if (showColors=="ethnicity"){
 		return colorArray[currentTrip.trip.ethnicity];
 	}else if (showColors=="age"){
-		return colorArray[currentTrip.trip.age];
+		return colorArray[currentTrip.trip.age-1]; //offset w/ array bcs we ignore <18 yrs old
 	}else if (showColors=="rider_type"){
 		return colorArray[currentTrip.trip.rider_type];
 	}else if(showColors=="purpose"){
@@ -279,12 +300,13 @@ function setPolylineColor (currentTrip){
 	}else{
 		return "#E34C25";
 	}
-	
 }
 
 function changeColor(tripCategory){
-	$('#status').text("Updating map...");
-	$('#status').css("visibility", "visible");
+	if(loadedTrips.length>0){
+		$('#statusMsg').text("Updating map...");
+		$('#status').css("visibility", "visible");
+	}
 	showColors = tripCategory.value;
 	colorIndex = 1;
 	var checkboxes = document.getElementsByTagName("input");
@@ -304,11 +326,21 @@ function changeColor(tripCategory){
 		$('#missingAttrib').css("visibility", "hidden");
 	else 
 		$('#missingAttrib').css("visibility", "visible");
-	*/
-		
+	*/		
 	if(visibleTrips.length>0){
-		tripCount=1;
-		updatePolylines(true);
+		for(i=0; i < visibleTrips.length; i++){
+/*
+			if(loadedTrips[visibleTrips[i]].trip &&
+			   riderType.indexOf(loadedTrips[visibleTrips[i]].trip.rider_type) != -1 && 
+			   age.indexOf(loadedTrips[visibleTrips[i]].trip.age) != -1 &&
+			   gender.indexOf(loadedTrips[visibleTrips[i]].trip.gender) != -1 &&
+			   ethnicity.indexOf(loadedTrips[visibleTrips[i]].trip.ethnicity) != -1 &&
+			   purpose.indexOf(loadedTrips[visibleTrips[i]].trip.purpose) != -1){
+				   tripsToDraw.push(visibleTrips[i]);
+			   }
+*/
+		}					
+		updatePolylines(.5);
 	}
 }
 

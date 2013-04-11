@@ -36,6 +36,7 @@ a:hover{
 	height: 920px; 
 	background-color: #fff;
 	margin-bottom: 20px;
+	margin-left: 10px;
 }
 
 #controlContainer{
@@ -54,6 +55,7 @@ a:hover{
     box-shadow:         inset 0 0 6px #999;
     border:1px solid #f3f3f3;
     border-radius: 5px;
+    margin-left: 10px;
 }
 
 #controls {
@@ -79,16 +81,18 @@ a:hover{
 #status{
 	visibility: hidden;
 	position:absolute;
+	text-align: center;
 	top: 40%;
 	left: 35%;
 	padding: 20px;
 	font-size: 24px;
-	font-weight: 600;
+/* 	font-weight: 500; */
 	color: #fff;
 	border-radius: 5px;
 	background-color: rgba(227,76,37,0.7);
 	border:1px solid #fff;
 	z-index:100;
+
 }
 
 .navbar-fixed-top {
@@ -108,10 +112,22 @@ a:hover{
 	font-size: 48px;
 }
 
+.cycleAtl_title a{
+	text-decoration: none;
+	color:#fff;
+	padding:2px 4px 2px 4px;
+}
+
+.cycleAtl_title a:hover{
+	text-decoration: none;
+	color:#fff;
+	background-color: rgba(255,255,255,.2);
+}
+
 .smallText{
 	font-size: 24px;
 	color: #fff;
-	margin-left: 1.5em;
+	margin-left: 60px;
 }
 
 .right{
@@ -126,6 +142,7 @@ a:hover{
 #top{
 	font-size: 16px;
 	margin-top:20px;
+	margin-left:10px;
 }
 
 /*
@@ -165,6 +182,7 @@ a:hover{
 
 p.bottom {
 	font-size: 16px;
+	margin-left: 10px;
 }
 
 .form_description p{

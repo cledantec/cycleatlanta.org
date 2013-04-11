@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Visualizing Cycle Atlanta Data</title>
+        <title>Cycle Atlanta: Interactive map</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
@@ -37,7 +37,7 @@
 
         <div class="navbar-fixed-top">
             <div class="container">
-                <p class="cycleAtl_title">Cycle Atlanta <span class="smallText">Mapping the ride to a better Atlanta.</span></p>
+                <p class="cycleAtl_title"><a href="http://cycleatlanta.org">Cycle Atlanta <span class="smallText">Mapping the ride to a better Atlanta.</span></a></p>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
         	<div id="top"><p>Visualizing <span class="trip_count"></span> rides collected by users of the <a href="http://cycleatlanta.org">Cycle Atlanta apps</a>. <span class="right">Select attributes you wish to view and click "Update the map!" below.</span></p></div>
             <div id="mapBody"></div>
             <div id="controlContainer">
-	            <div id="status">Fetching data...</div>
+	            <div id="status"><span id="statusMsg">Updating map...</span><br/><img src="img/loader.gif" alt="loader" width="220" height="19"></div>
 	            <div id="controls"><div id="slider"></div></div>
 	            <div id="form">
 					<form id="ca_data_selector" action="#">
@@ -119,7 +119,7 @@
 									<input id="ethnicity_2" name="ethnicity_2" class="element checkbox ethnicity" type="checkbox" value="2" checked/>
 									<label class="choice" id="label_ethnicity_2" for="ethnicity_2">African American</label>
 									<input id="ethnicity_3" name="ethnicity_3" class="element checkbox ethnicity" type="checkbox" value="3" checked/>
-									<label class="choice" id="label_ethnicity_3" for="ethnicity_3">Hispanic</label>
+									<label class="choice" id="label_ethnicity_3" for="ethnicity_3">Asian</label>
 									<input id="ethnicity_4" name="ethnicity_4" class="element checkbox ethnicity" type="checkbox" value="4" checked/>
 									<label class="choice" id="label_ethnicity_4" for="ethnicity_4">Native American</label>
 									<input id="ethnicity_5" name="ethnicity_5" class="element checkbox ethnicity" type="checkbox" value="5" checked/>

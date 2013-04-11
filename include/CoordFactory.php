@@ -39,9 +39,9 @@ class CoordFactory
 	{
 		$db = DatabaseConnectionFactory::getConnection();
 		$coords = array();
-		$skipTrips = array();
-		$latLongMinThreshold = .007; //delta must be more than 7m
-		$latLongMaxThreshold = .1; //delta must be less than 200m (or whole trip is ignored).
+		
+		$latLongMinThreshold = 0.007; //delta must be more than 7m
+		$latLongMaxThreshold = 0.067; //delta must be less than 67m (or whole trip is ignored).
 		$query = "SELECT * FROM coord WHERE ";
 	    if (is_array($trip_id)) {
 	      $first = True;
@@ -57,13 +57,17 @@ class CoordFactory
 			$query .= "trip_id IN (" . $db->escape_string( $trip_id ) . ")";
 		}
 		//$query .= " ORDER BY trip_id ASC, recorded ASC";
-		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+/*
+Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 			': memory_usage = ' . memory_get_usage(True));
+*/
 		
 		if ( ( $result = $db->query( $query ) ) && $result->num_rows )
 		{
+/*
 		  Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 				' returned ' . $result->num_rows .' rows: memory_usage = ' . memory_get_usage(True));
+*/
 
 			// if the request was for an array of trip_ids then just return the $result class
 			// (I know, this is not very OO but putting it all in a structure in memory is no good either
@@ -73,18 +77,24 @@ class CoordFactory
 			$skipTrip = null;
 			$last = null;
 			while ( $coord = $result->fetch_object( self::$class ) ){
-				//test for same trip
+				/*
+				Would be great to move this into the mysql query: on coords w/ same trip_id, if the delta between the points is
+				more than the min threshold and less than the max threshold, return the point. If the delta is more than the max
+				threshold, then remove the trip from the returned set completely.
+				
+				I suspect doing that here is slower than if i could do it directly in the query.
+				*/
 				if($skipTrip && $coord->trip_id == $skipTrip->trip_id){
-					//no-op, this is a trip to skip
+				//no-op, this is a trip to skip
 				}else{
 					$skipTrip = null;
 					if($last && $coord->trip_id == $last->trip_id){
-						if( Util::latlongPointDistance($last->latitude, $last->longitude, $coord->latitude, $coord->longitude) >= $latLongMinThreshold ){
+						$latLongDistance = Util::latlongPointDistance($last->latitude, $last->longitude, $coord->latitude, $coord->longitude);
+						if( $latLongDistance >= $latLongMinThreshold ){
 							$coords[] = $coord;
 						}
-						if( Util::latlongPointDistance($last->latitude, $last->longitude, $coord->latitude, $coord->longitude) >= $latLongMaxThreshold ){
+						if( $latLongDistance >= $latLongMaxThreshold ){
 							$skipTrip = $coord;
-							$skipTrips = $coord->trip_id;
 							for($i=count($coords)-1;$i >=0 ; $i--){
 								//start at the end of the array, remove items until we get to the previous trip
 								if($coords[$i]->trip_id == $skipTrip->trip_id){
@@ -100,13 +110,11 @@ class CoordFactory
 				}
 				$last = $coord;
 			}
-
 			$result->close();
 		}
 		$result = null;
-		Util::log( __METHOD__ . "() with query " . $query . " of length " . strlen($query) . 
+		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 			' RET2: memory_usage = ' . memory_get_usage(True));
-		Util::log("Trips to skip ".count($skipTrips));
 
 
 		return json_encode($coords);
