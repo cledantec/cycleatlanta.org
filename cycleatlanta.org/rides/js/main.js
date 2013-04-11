@@ -238,8 +238,9 @@ function drawPolylines(tripData, tripsToDraw) {
 				if (latlngs.length>0){
 					//add the previous, completed polyline, color coded if needed
 					pathColor = setPolylineColor (loadedTrips[workingTrip]);				
-					loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
+					loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});					
 					tripsLayer.addLayer(loadedTrips[workingTrip].path);
+					//loadedTrips[workingTrip].path.bindPopup(workingTrip);
 				}
 				latlngs = new Array();
 				workingTrip = tripData[i].trip_id;
@@ -252,6 +253,7 @@ function drawPolylines(tripData, tripsToDraw) {
 		pathColor = setPolylineColor (loadedTrips[workingTrip]);
 		loadedTrips[workingTrip].path = L.polyline(latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 		tripsLayer.addLayer(loadedTrips[workingTrip].path);
+		//loadedTrips[workingTrip].path.bindPopup(workingTrip);
 	}else{
 		//do this when updating the polylines, we need to only render visible lines, not all the data potentially pulled down.
 		for(var i=0; i<tripsToDraw.length; i++){
@@ -260,6 +262,7 @@ function drawPolylines(tripData, tripsToDraw) {
 				//recreate the polyline based on previous line's latlngs...?
 				tripData[tripsToDraw[i]].path = L.polyline(tripData[tripsToDraw[i]].path._latlngs, {color: pathColor, weight: 2, opacity: .5, smoothFactor: 1});
 				tripsLayer.addLayer(tripData[tripsToDraw[i]].path);	
+				//tripData[tripsToDraw[i]].path.bindPopup(tripsToDraw[i]);
 			}
 		}
 	}
@@ -267,7 +270,7 @@ function drawPolylines(tripData, tripsToDraw) {
 
 function updatePolylines(lineOpacity){
 	if(visibleTrips.length>0){
-		for(i=1; i<visibleTrips.length; i++){	
+		for(i=0; i<visibleTrips.length; i++){	
 			if(	loadedTrips[visibleTrips[i]].path ){
 				pathColor = setPolylineColor(loadedTrips[visibleTrips[i]]);
 				loadedTrips[visibleTrips[i]].path.setStyle({color:pathColor, opacity: lineOpacity}); 						
@@ -327,19 +330,7 @@ function changeColor(tripCategory){
 	else 
 		$('#missingAttrib').css("visibility", "visible");
 	*/		
-	if(visibleTrips.length>0){
-		for(i=0; i < visibleTrips.length; i++){
-/*
-			if(loadedTrips[visibleTrips[i]].trip &&
-			   riderType.indexOf(loadedTrips[visibleTrips[i]].trip.rider_type) != -1 && 
-			   age.indexOf(loadedTrips[visibleTrips[i]].trip.age) != -1 &&
-			   gender.indexOf(loadedTrips[visibleTrips[i]].trip.gender) != -1 &&
-			   ethnicity.indexOf(loadedTrips[visibleTrips[i]].trip.ethnicity) != -1 &&
-			   purpose.indexOf(loadedTrips[visibleTrips[i]].trip.purpose) != -1){
-				   tripsToDraw.push(visibleTrips[i]);
-			   }
-*/
-		}					
+	if(visibleTrips.length>0){					
 		updatePolylines(.5);
 	}
 }
