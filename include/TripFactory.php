@@ -145,6 +145,21 @@ class TripFactory
 		return json_encode($trip_ids);
 	}
 	
+	public static function getTripsByUser($user){
+		$db = DatabaseConnectionFactory::getConnection();
+		$trips = array();
+
+		$query = "SELECT * FROM trip WHERE user_id={$user}";
+
+		$result = $db->query( $query );		
+		while ( $trip = $result->fetch_object( self::$class ) )
+				$trips[] = $trip;
+
+		$result->close();
+		 
+		return $trips;
+	}
+	
 	public static function getTripIds(){
 		$db = DatabaseConnectionFactory::getConnection();
 		$trip_ids = array();
