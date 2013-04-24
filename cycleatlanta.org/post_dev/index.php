@@ -78,7 +78,7 @@ elseif ( $version == PROTOCOL_VERSION_4 ) {
 }
 
 // validate device ID
-if ( is_string( $device ) && strlen( $device ) === 32 )
+if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 31 )
 {
 	// try to lookup user by this device ID
 	$user = null;
@@ -272,7 +272,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		Util::log( "ERROR failed to save trip, invalid user" );
 }
 else
-	Util::log( "ERROR failed to save trip, invalid device" );
+	Util::log( "ERROR failed to save trip, invalid device: {$device}" );
 
 Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
 

@@ -119,4 +119,51 @@ Util::log( __METHOD__ . "() with query of length " . strlen($query) .
 
 		return json_encode($coords);
 	}
+	
+	public static function getAllCoordsByTrip( $trip_id )
+  // original get function w/ no coor filtering
+	{
+		$db = DatabaseConnectionFactory::getConnection();
+		$coords = array();
+		$query = "SELECT * FROM coord WHERE ";
+	    if (is_array($trip_id)) {
+	      $first = True;
+	  		foreach ($trip_id as $idx => $single_trip_id ) {
+	        	if ($first) {
+					$first = False;
+				} else {
+					$query .= " OR ";
+				}
+				$query .= "trip_id='" . $db->escape_string($single_trip_id) . "'";
+			}
+		} else {
+			$query .= "trip_id='" . $db->escape_string( $trip_id ) . "'";
+		}
+		$query .= " ORDER BY trip_id ASC, recorded ASC";
+		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+			': memory_usage = ' . memory_get_usage(True));
+
+		if ( ( $result = $db->query( $query ) ) && $result->num_rows )
+		{
+		  Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+				' returned ' . $result->num_rows .' rows: memory_usage = ' . memory_get_usage(True));
+
+			// if the request was for an array of trip_ids then just return the $result class
+			// (I know, this is not very OO but putting it all in a structure in memory is no good either
+			// cL note: not clear this will work over JSON.
+			if (is_array($trip_id)) {
+				return $result;
+			}
+
+			while ( $coord = $result->fetch_object( self::$class ) )
+				$coords[] = $coord;
+
+			$result->close();
+		}
+		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+			' RET2: memory_usage = ' . memory_get_usage(True));
+
+//		return $coords;
+		return json_encode($coords);
+	}
 }
