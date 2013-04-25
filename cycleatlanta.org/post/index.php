@@ -78,7 +78,7 @@ elseif ( $version == PROTOCOL_VERSION_4 ) {
 }
 
 // validate device ID
-if ( is_string( $device ) && strlen( $device ) === 32 )
+if ( is_string( $device ) )
 {
 	// try to lookup user by this device ID
 	$user = null;
