@@ -2,6 +2,7 @@
 include_once('CoordFactory.php');
 include_once('TripFactory.php');
 include_once('UserFactory.php');
+include_once('NoteFactory.php');
 include_once('Util.php');
 
 ob_start('ob_gzhandler');
@@ -37,6 +38,20 @@ if($t=="get_coords_by_trip"){
 	Util::log( "+++++++++++++ Download: Download Trip Coords ++++++++++");
 	$obj = new CoordFactory();	
 	echo $obj->getAllCoordsByTrip($q);
+} else if ($t=="get_user_and_data"){
+	Util::log("");
+	Util::log( "+++++++++++++ Download: Download User and Trips ++++++++++");
+	$userFactory = new UserFactory();
+	$tripFactory = new TripFactory();
+	$noteFactory = new NoteFactory();
+	
+	$response = array();
+	$response['user'] = $userFactory->getUserByDevice($d);
+	$response['trips'] = $tripFactory->getTripsByUser($response['user']->id);
+	$response['notes'] = $noteFactory->getNotesByUser($response['user']->id);
+	//Util::log("user id: ". $response['user']->id );
+	//echo $response['user']->id;
+	echo json_encode($response);
 } else if ($t=="get_user_and_trips"){
 	Util::log("");
 	Util::log( "+++++++++++++ Download: Download User and Trips ++++++++++");
