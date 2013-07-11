@@ -134,12 +134,13 @@ Util::log( __METHOD__ . "() with query of length " . strlen($query) .
 				} else {
 					$query .= " OR ";
 				}
-				$query .= "trip_id='" . $db->escape_string($single_trip_id) . "'";
+				$query .= "trip_id IN (" . $db->escape_string($single_trip_id) . ")";
 			}
 		} else {
-			$query .= "trip_id='" . $db->escape_string( $trip_id ) . "'";
+			$query .= "trip_id IN (" .  $trip_id  . ")";
 		}
 		$query .= " ORDER BY trip_id ASC, recorded ASC";
+		
 		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
 			': memory_usage = ' . memory_get_usage(True));
 

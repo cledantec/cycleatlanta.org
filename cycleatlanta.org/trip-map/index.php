@@ -53,6 +53,8 @@
 
         <div class="container">
 	        <div id="controls"><a href="#" class="tileToggle" onclick="toggleTiles();">Hide</a> streets</div>
+	        <div id="tripForm"><form id="trip_selector">Trip: <input type="text" name="trip" id="tripID"> <input type="Submit" class="button">
+	        </form></div>
             <div id="mapBody"></div>
             <hr>
 
@@ -71,12 +73,7 @@
         <script src="js/main.js"></script>
 
         <script type="text/javascript">
-	            (function() {
-	                Trips.init({
-	                    loadNum: 5
-	                });
-	
-	            })();
+	            
         </script>
     </body>
 </html>

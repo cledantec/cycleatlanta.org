@@ -20,3 +20,9 @@
 .trip_count, .trip_total {
 	font-weight: 600;
 }
+
+#tripForm {margin-top: 15px;}
+
+#tripForm .button { margin-top:-10px;}
+
+#tripForm .textField { width: 100px; }
