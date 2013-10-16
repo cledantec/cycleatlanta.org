@@ -88,7 +88,10 @@ if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 3
 		if ($userData->email) {
 			$device .= trim($userData->email);
 			Util::log ( "New deviceID: {$device}" );
-		} 			
+		}
+		if ($userData->app_version == NULL) {
+			$userData->app_version = "1.0 on iOS 7";
+		}  			
 	}
 	
 	// try to lookup user by this device ID

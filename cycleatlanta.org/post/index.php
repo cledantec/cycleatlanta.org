@@ -88,7 +88,10 @@ if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 3
 		if ($userData->email) {
 			$device .= trim($userData->email);
 			Util::log ( "New deviceID: {$device}" );	
-		} 		
+		}
+		if ($userData->app_version == NULL) {
+			$userData->app_version = "1.0 on iOS 7";
+		} 	
 	}
 	
 	// try to lookup user by this device ID
@@ -192,7 +195,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 3
 				exit;
 			}
 			else
-				Util::log( "Saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords.." );
+				Util::log( "Saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords." );
 	
 			// init stop to null
 			$stop = null;
@@ -203,6 +206,11 @@ if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 3
 				$coord = null;
 				if ( $version == PROTOCOL_VERSION_3 )
 					{
+					
+					$stop = CoordFactory::insert_bulk( $trip->id, $coords );
+					
+					//start original block					
+					/*
 					foreach ( $coords as $coord )
 					{ //( $trip_id, $recorded, $latitude, $longitude, $altitude=0, $speed=0, $hAccuracy=0, $vAccuracy=0 )
 						CoordFactory::insert(   $trip->id, 
@@ -218,9 +226,14 @@ if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 3
 					// get the last coord's recorded => stop timestamp
 					if ( $coord && isset( $coord->r ) )
 						$stop = $coord->r;
+					*/					
 					}
 				else if ( $version == PROTOCOL_VERSION_2 )
 				{
+				
+					$stop = CoordFactory::insert_bulk_protocol_2 ( $trip->id, $coords );
+
+					/*
 					foreach ( $coords as $coord )
 					{
 						CoordFactory::insert(   $trip->id, 
@@ -236,6 +249,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 3
 					// get the last coord's recorded => stop timestamp
 					if ( $coord && isset( $coord->rec ) )
 						$stop = $coord->rec;
+					*/
 				}
 				else // PROTOCOL_VERSION_1
 				{
