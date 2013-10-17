@@ -26,20 +26,14 @@ class CoordFactory
 		if ( $coord && isset( $coord->r ) )
 			$stop = $coord->r;
 		
-		if ( $db->query( "ALTER TABLE `coord` DISABLE KEYS") )
-			Util::log( __METHOD__ . "() indexes disabled" );
 		if ( $db->query( "INSERT INTO coord ( trip_id, recorded, latitude, longitude, altitude, speed, hAccuracy, vAccuracy ) VALUES ".implode(", ", $query_body) ) === true )
 		{
 			//Util::log( __METHOD__ . "() added coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
-			Util::log( __METHOD__ . "() finished bulk insert of coord data for trip {$trip_id}, stopped at {$stop}" );
-			if ( $db->query( "ALTER TABLE `coord` ENABLE KEYS") )
-							Util::log( __METHOD__ . "() indexes enabled" );
+			Util::log( __METHOD__ . "() finished bulk insert of coord data for trip {$trip_id}, stopped at {$stop}" );		
 			return $stop;
 		}
 		else
 			Util::log( __METHOD__ . "() ERROR failed to add coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
-		if ( $db->query( "ALTER TABLE `coord` ENABLE KEYS") )
-						Util::log( __METHOD__ . "() indexes enabled" );
 		return false;
 	}
 	
@@ -60,23 +54,17 @@ class CoordFactory
 							$db->escape_string( $coord->hac ) . "', '" .
 							$db->escape_string( $coord->vac ) . "' )";
 		}
-		if ( $coord && isset( $coord->r ) )
-			$stop = $coord->r;
+		if ( $coord && isset( $coord->rec ) )
+			$stop = $coord->rec;
 		
-		if ( $db->query( "ALTER TABLE `coord` DISABLE KEYS") )
-			Util::log( __METHOD__ . "() indexes disabled" );
 		if ( $db->query( "INSERT INTO coord ( trip_id, recorded, latitude, longitude, altitude, speed, hAccuracy, vAccuracy ) VALUES ".implode(", ", $query_body) ) === true )
 		{
 			//Util::log( __METHOD__ . "() added coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
 			Util::log( __METHOD__ . "() finished bulk insert of coord data for trip {$trip_id}, stopped at {$stop}" );
-			if ( $db->query( "ALTER TABLE `coord` ENABLE KEYS") )
-							Util::log( __METHOD__ . "() indexes enabled" );
 			return $stop;
 		}
 		else
 			Util::log( __METHOD__ . "() ERROR failed to add coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
-		if ( $db->query( "ALTER TABLE `coord` ENABLE KEYS") )
-						Util::log( __METHOD__ . "() indexes enabled" );
 		return false;
 	}
 
