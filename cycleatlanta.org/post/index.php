@@ -255,7 +255,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 3
 else
 	Util::log( "ERROR failed to save trip, invalid device: {$device}" );
 
-Util::log( "+++++++++++++ Production: Upload Finished ++++++++++");
+Util::log( "+++++++++++++ Production: Upload Finished with Error ++++++++++");
 
 header("HTTP/1.1 500 Internal Server Error");
 $response = new stdClass;
