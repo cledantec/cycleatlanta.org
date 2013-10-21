@@ -8,7 +8,7 @@ class CoordFactory
 	static $class = 'Coord';
 	
 	public static function insert_bulk( $trip_id, $coords ) {
-		Util::log( __METHOD__ . "() begin bulk insert of coord data PROTOCOL 3." );
+		//Util::log( __METHOD__ . "() begin bulk insert of coord data PROTOCOL 3." );
 		$db = DatabaseConnectionFactory::getConnection();
 		
 		$query_body = array();
@@ -29,17 +29,17 @@ class CoordFactory
 		if ( $db->query( "INSERT INTO coord ( trip_id, recorded, latitude, longitude, altitude, speed, hAccuracy, vAccuracy ) VALUES ".implode(", ", $query_body) ) === true )
 		{
 			//Util::log( __METHOD__ . "() added coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
-			Util::log( __METHOD__ . "() finished bulk insert of coord data for trip {$trip_id}, stopped at {$stop}" );		
+			Util::log( "INFO " . __METHOD__ . "() for trip {$trip_id}, stopped at {$stop}" );		
 			return $stop;
 		}
 		else
-			Util::log( __METHOD__ . "() ERROR failed to add coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
+			Util::log( "ERROR " . __METHOD__ . "() failed to add coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
 		return false;
 	}
 	
 	//to handle old data protocol.
 	public static function insert_bulk_protocol_2( $trip_id, $coords ) {
-		Util::log( __METHOD__ . "() begin bulk insert of coord data PROTOCOL 2." );
+		//Util::log( __METHOD__ . "() begin bulk insert of coord data PROTOCOL 2." );
 		$db = DatabaseConnectionFactory::getConnection();
 		
 		$query_body = array();
@@ -60,11 +60,11 @@ class CoordFactory
 		if ( $db->query( "INSERT INTO coord ( trip_id, recorded, latitude, longitude, altitude, speed, hAccuracy, vAccuracy ) VALUES ".implode(", ", $query_body) ) === true )
 		{
 			//Util::log( __METHOD__ . "() added coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
-			Util::log( __METHOD__ . "() finished bulk insert of coord data for trip {$trip_id}, stopped at {$stop}" );
+			Util::log( "INFO " . __METHOD__ . "() for trip {$trip_id}, stopped at {$stop}" );
 			return $stop;
 		}
 		else
-			Util::log( __METHOD__ . "() ERROR failed to add coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
+			Util::log( "ERROR " . __METHOD__ . "() failed to add coord data to trip $trip_id" );
 		return false;
 	}
 
@@ -88,7 +88,7 @@ class CoordFactory
 			return true;
 		}
 		else
-			Util::log( __METHOD__ . "() ERROR failed to add coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
+			Util::log( "ERROR " . __METHOD__ . "() failed to add coord ( {$latitude}, {$longitude} ) to trip $trip_id" );
 
 		return false;
 	}
@@ -174,9 +174,7 @@ Util::log( __METHOD__ . "() with query of length " . strlen($query) .
 			$result->close();
 		}
 		$result = null;
-		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
-			' RET2: memory_usage = ' . memory_get_usage(True));
-
+		Util::log( "INFO " . __METHOD__ . "() with query of length " . strlen($query) . ' RET2: memory_usage = ' . memory_get_usage(True));
 
 		return json_encode($coords);
 	}
@@ -202,12 +200,11 @@ Util::log( __METHOD__ . "() with query of length " . strlen($query) .
 		}
 		$query .= " ORDER BY trip_id ASC, recorded ASC";
 		
-		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
-			': memory_usage = ' . memory_get_usage(True));
+		Util::log( "INFO " . __METHOD__ . "() with query of length " . strlen($query) . ': memory_usage = ' . memory_get_usage(True));
 
 		if ( ( $result = $db->query( $query ) ) && $result->num_rows )
 		{
-		  Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+		  Util::log( "INFO " . __METHOD__ . "() with query of length " . strlen($query) . 
 				' returned ' . $result->num_rows .' rows: memory_usage = ' . memory_get_usage(True));
 
 			// if the request was for an array of trip_ids then just return the $result class
@@ -222,7 +219,7 @@ Util::log( __METHOD__ . "() with query of length " . strlen($query) .
 
 			$result->close();
 		}
-		Util::log( __METHOD__ . "() with query of length " . strlen($query) . 
+		Util::log( "INFO " . __METHOD__ . "() with query of length " . strlen($query) . 
 			' RET2: memory_usage = ' . memory_get_usage(True));
 
 //		return $coords;
