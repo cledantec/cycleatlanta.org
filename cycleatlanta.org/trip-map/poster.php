@@ -19,7 +19,7 @@
             }
         </style>
         <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
-        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/print.css">
 
 <!--         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script> -->
         <script type="text/javascript">	
@@ -52,7 +52,7 @@
         </div>
 
         <div class="container">
-	        <div id="controls"><a href="#" class="tileToggle" onclick="toggleTiles();">Hide</a> streets</div>
+	        <div id="controls"><a href="#" class="tileToggle" onclick="toggleTiles();">Hide</a> streets. <a href="#" class="tileToggle" onclick="loadData();">Load</a> data.</div>
             <div id="mapBody"></div>
             <hr>
 
@@ -68,15 +68,17 @@
 
         <script src="js/vendor/bootstrap.min.js"></script>
 
-        <script src="js/main.js"></script>
+        <script src="js/print.js"></script>
 
         <script type="text/javascript">
-	            (function() {
+	            /*
+(function() {
 	                Trips.init({
 	                    loadNum: 5
 	                });
 	
 	            })();
+*/
         </script>
     </body>
 </html>
