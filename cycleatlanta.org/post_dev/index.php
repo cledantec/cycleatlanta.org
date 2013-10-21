@@ -77,9 +77,23 @@ elseif ( $version == PROTOCOL_VERSION_4 ) {
 
 }
 
-// validate device ID
-if ( is_string( $device ) && strlen( $device ) === 32 )
+// validate device ID: should be 32 but some android devices are reporting 31
+// TODO: This will need to change once iOS7 device ID bug is fixed and released
+if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 31)
 {
+	// HOT FIX: check if the deviceID is the problematic one from iOS7, if so, append the email address if it exists, if no email, append random hash (creating a new user).
+	$userData = (object) json_decode( $userData );
+	if ( $device == "0f607264fc6318a92b9e13c65db7cd3c" ){
+		Util::log( "ALERT: iOS7 generic device id!");
+		if ($userData->email) {
+			$device .= trim($userData->email);
+			Util::log ( "New deviceID: {$device}" );
+		}
+		if ($userData->app_version == NULL) {
+			$userData->app_version = "1.0 on iOS 7";
+		}  			
+	}
+	
 	// try to lookup user by this device ID
 	$user = null;
 	if ( $user = UserFactory::getUserByDevice( $device ) )
@@ -148,8 +162,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		// add a trip
 		else { 		
 			// check for userData and update if needed
-			if ( ( $userData = (object) json_decode( $userData ) ) &&
-				 ( $userObj  = new User( $userData ) ) )
+			if ( $userObj  = new User( $userData ) )
 			{
 				// update user record
 				if ( $tempUser = UserFactory::update( $user, $userObj ) )
@@ -272,7 +285,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		Util::log( "ERROR failed to save trip, invalid user" );
 }
 else
-	Util::log( "ERROR failed to save trip, invalid device" );
+	Util::log( "ERROR failed to save trip, invalid device: {$device}" );
 
 Util::log( "+++++++++++++ Development: Upload Finished ++++++++++");
 

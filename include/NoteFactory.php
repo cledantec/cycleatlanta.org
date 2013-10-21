@@ -97,6 +97,23 @@ class NoteFactory
 
 		return $note;
 	}
+	
+	public static function getNotesByUser ( $user_id )
+	{
+		$db = DatabaseConnectionFactory::getConnection();
+		$notes = array();
+		
+		$query = "SELECT * FROM note WHERE user_id={$user_id}";
+
+		$result = $db->query( $query );		
+		while ( $note = $result->fetch_object( self::$class ) )
+				$notes[] = $note;
+
+		$result->close();
+		 
+		return $notes;
+
+	}
 
 	// functions for mucking EXIF data, pulled from gps example in pel project
 	

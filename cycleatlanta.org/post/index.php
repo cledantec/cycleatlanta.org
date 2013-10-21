@@ -41,7 +41,7 @@ if (isset($_SERVER['HTTP_CYCLEATL_PROTOCOL_VERSION'])) {
   $version = intval($_POST['version']);
 }
 
-Util::log ( "protocol version: {$version}");
+Util::log ( "INFO Protocol version {$version}");
 
 // older protocol types use a urlencoded form body
 if ( $version == PROTOCOL_VERSION_1 || $version == PROTOCOL_VERSION_2 || $version == null) {
@@ -77,14 +77,28 @@ elseif ( $version == PROTOCOL_VERSION_4 ) {
 
 }
 
-// validate device ID
-if ( is_string( $device ) && strlen( $device ) === 32 )
+// validate device ID: should be 32 but some android devices are reporting 31
+// TODO: This will need to change once iOS7 device ID bug is fixed and released
+if ( is_string( $device ) && strlen( $device ) === 32 || strlen( $device ) === 31)
 {
+	// HOT FIX: check if the deviceID is the problematic one from iOS7, if so, append the email address if it exists, if no email, append random hash (creating a new user).
+	$userData = (object) json_decode( $userData );
+	if ( $device == "0f607264fc6318a92b9e13c65db7cd3c" ){
+		Util::log( "WARNING: iOS7 generic device id!");
+		if ($userData->email) {
+			$device .= trim($userData->email);
+			Util::log ( "INFO: New deviceID: {$device}" );	
+		}
+		if ($userData->app_version == NULL) {
+			$userData->app_version = "1.0 on iOS 7";
+		} 	
+	}
+	
 	// try to lookup user by this device ID
 	$user = null;
 	if ( $user = UserFactory::getUserByDevice( $device ) )
 	{
-		Util::log( "found user {$user->id} for device $device" );
+		Util::log( "INFO found user {$user->id} for device $device" );
 		//print_r( $user );
 	}
 	elseif ( $user = UserFactory::insert( $device ) )
@@ -148,8 +162,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		// add a trip
 		else { 		
 			// check for userData and update if needed
-			if ( ( $userData = (object) json_decode( $userData ) ) &&
-				 ( $userObj  = new User( $userData ) ) )
+			if ( $userObj  = new User( $userData ) )
 			{
 				// update user record
 				if ( $tempUser = UserFactory::update( $user, $userObj ) )
@@ -158,7 +171,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 	
 			$coords  = (array) json_decode( $coords );
 			$n_coord = count( $coords );
-			Util::log( "n_coord: {$n_coord}" );
+			//Util::log( "n_coord: {$n_coord}" );
 	
 			// sort incoming coords by recorded timestamp
 			// NOTE: $coords might be a single object if only 1 coord so check is_array
@@ -182,7 +195,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 				exit;
 			}
 			else
-				Util::log( "Saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords.." );
+				Util::log( "INFO Saving a new trip for user {$user->id} starting at {$start} with {$n_coord} coords." );
 	
 			// init stop to null
 			$stop = null;
@@ -191,46 +204,14 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 			if ( $trip = TripFactory::insert( $user->id, $purpose, $notes, $start ) )
 			{
 				$coord = null;
-				if ( $version == PROTOCOL_VERSION_3 )
-					{
-					foreach ( $coords as $coord )
-					{ //( $trip_id, $recorded, $latitude, $longitude, $altitude=0, $speed=0, $hAccuracy=0, $vAccuracy=0 )
-						CoordFactory::insert(   $trip->id, 
-												$coord->r, //recorded timestamp
-												$coord->l, //latitude
-												$coord->n, //longitude
-												$coord->a, //altitude
-												$coord->s, //speed
-												$coord->h, //haccuracy
-												$coord->v ); //vaccuracy
-					}
-	
-					// get the last coord's recorded => stop timestamp
-					if ( $coord && isset( $coord->r ) )
-						$stop = $coord->r;
-					}
-				else if ( $version == PROTOCOL_VERSION_2 )
-				{
-					foreach ( $coords as $coord )
-					{
-						CoordFactory::insert(   $trip->id, 
-												$coord->rec, 
-												$coord->lat, 
-												$coord->lon,
-												$coord->alt, 
-												$coord->spd, 
-												$coord->hac, 
-												$coord->vac );
-					}
-	
-					// get the last coord's recorded => stop timestamp
-					if ( $coord && isset( $coord->rec ) )
-						$stop = $coord->rec;
+				if ( $version == PROTOCOL_VERSION_3 ){					
+					$stop = CoordFactory::insert_bulk( $trip->id, $coords );	
 				}
-				else // PROTOCOL_VERSION_1
-				{
-					foreach ( $coords as $coord )
-					{
+				else if ( $version == PROTOCOL_VERSION_2 ){
+					$stop = CoordFactory::insert_bulk_protocol_2 ( $trip->id, $coords );
+
+				} else { // PROTOCOL_VERSION_1
+					foreach ( $coords as $coord ){
 						CoordFactory::insert(   $trip->id, 
 												$coord->recorded, 
 												$coord->latitude, 
@@ -246,12 +227,12 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 						$stop = $coord->recorded;
 				}
 	
-				Util::log( "stop: {$stop}" );
+				//Util::log( "stop: {$stop}" );
 	
 				// update trip start, stop, n_coord
 				if ( $updatedTrip = TripFactory::update( $trip->id, $stop, $n_coord ) )
 				{
-					Util::log( "updated trip {$updatedTrip->id} stop {$stop}, n_coord {$n_coord}" );
+					Util::log( "INFO updated trip {$updatedTrip->id} stop {$stop}, n_coord {$n_coord}" );
 				}
 				else
 					Util::log( "WARNING failed to update trip {$trip->id} stop, n_coord" );
@@ -272,7 +253,7 @@ if ( is_string( $device ) && strlen( $device ) === 32 )
 		Util::log( "ERROR failed to save trip, invalid user" );
 }
 else
-	Util::log( "ERROR failed to save trip, invalid device" );
+	Util::log( "ERROR failed to save trip, invalid device: {$device}" );
 
 Util::log( "+++++++++++++ Production: Upload Finished ++++++++++");
 

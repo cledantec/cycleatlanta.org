@@ -1,7 +1,7 @@
 // create the map content
 var map = L.map('mapBody', {
     center: [33.77, -84.372],
-    zoom: 14
+    zoom: 17
 });
 
 // add an OpenStreetMap tile layer
@@ -23,6 +23,10 @@ function toggleTiles (){
 		tilesVisible = true;
 		$('.tileToggle').text('Hide');
 	}
+}
+
+function loadData (){
+	Trips.init({loadNum: 5});
 }
 
 var Trips ={

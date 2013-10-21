@@ -20,11 +20,11 @@ class TripFactory
 		if ( ( $db->query( $query ) === true ) &&
 			 ( $id = $db->insert_id ) )
 		{
-			Util::log( __METHOD__ . "() created new trip {$id} for user {$user_id}, start {$start}, {$purpose}: {$notes}" );
+			Util::log( "INFO " . __METHOD__ . "() created new trip {$id} for user {$user_id}, start {$start}, {$purpose}: {$notes}" );
 			return self::getTrip( $id );
 		}
 		else
-			Util::log( __METHOD__ . "() ERROR failed to create new trip for user {$user_id}, start {$start}, {$purpose}: {$notes}" );
+			Util::log( "ERROR " . __METHOD__ . "() failed to create new trip for user {$user_id}, start {$start}, {$purpose}: {$notes}" );
 
 		return false;
 	}
@@ -119,13 +119,45 @@ class TripFactory
 
 		if ( $db->query( $query ) ) 
 		{
-			Util::log( __METHOD__ . "() updated trip {$id}" );
+			Util::log( "INFO " . __METHOD__ . "() updated trip {$id}" );
 			return self::getTrip( $id );
 		}
 		else
-			Util::log( __METHOD__ . "() ERROR failed to update trip {$id}: {$query}" );
+			Util::log( "ERROR " . __METHOD__ . "() failed to update trip {$id}: {$query}" );
 
 		return false;
+	}
+	
+	public static function getTripAttrsByFilteredUser($filterByDemographics, $filterByPurpose){
+		$db = DatabaseConnectionFactory::getConnection();
+		
+		$trip_ids = array();
+
+		$query = "SELECT trip.id,age,gender,ethnicity,rider_type,cycling_freq.text,purpose FROM trip LEFT JOIN (user,cycling_freq) ON (user.id=trip.user_id AND user.cycling_freq=cycling_freq.id) WHERE trip.id IN (SELECT trip.id FROM trip WHERE user_id IN(SELECT user.id FROM user " . $db->escape_string($filterByDemographics) . ") ) AND n_coord>'120' AND purpose IN (" . $filterByPurpose . ") ORDER BY trip.id ASC";
+
+		Util::log(  "INFO " . __METHOD__ . "() with query: {$query}" );
+		$result = $db->query( $query );		
+		while ( $trip = $result->fetch_array())
+				$trip_ids[] = $trip;
+
+		$result->close();
+		 
+		return json_encode($trip_ids);
+	}
+	
+	public static function getTripsByUser($user){
+		$db = DatabaseConnectionFactory::getConnection();
+		$trips = array();
+
+		$query = "SELECT * FROM trip WHERE user_id={$user}";
+
+		$result = $db->query( $query );		
+		while ( $trip = $result->fetch_object( self::$class ) )
+				$trips[] = $trip;
+
+		$result->close();
+		 
+		return $trips;
 	}
 	
 	public static function getTripIds(){

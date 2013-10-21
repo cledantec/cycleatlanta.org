@@ -17,11 +17,11 @@ class UserFactory
 		if ( ( $db->query( $query ) === true ) &&
 			 ( $id = $db->insert_id ) )
 		{
-			Util::log( __METHOD__ . "() created new user {$id} for device {$device}" );
+			Util::log( "INFO " . __METHOD__ . "() created new user {$id} for device {$device}" );
 			return self::getUser( $id );
 		}
 		else
-			Util::log( __METHOD__ . "() ERROR failed to create new user for device {$device}" );
+			Util::log( "ERROR " . __METHOD__ . "() failed to create new user for device {$device}" );
 
 		return false;
 	}
@@ -77,7 +77,7 @@ class UserFactory
 			{
 				//and only if it's not the email address, handle that elsewhere
 				//if($key != 'email'){
-				Util::log( "updating {$key}\t=> '{$value}'" );
+				Util::log( "INFO " . __METHOD__ . "() updating {$key}\t=> '{$value}'" );
 				if ( !empty( $update ) )
 					$update .= ', ';
 
@@ -107,15 +107,15 @@ class UserFactory
 
 			if ( $db->query( $query ) ) 
 			{
-				Util::log( __METHOD__ . "() updated user {$old->id}:" );
-				Util::log( $query );
+				Util::log( "INFO " . __METHOD__ . "() updated user {$old->id}:" );
+				//Util::log( $query );
 				return self::getUser( $old->id );
 			}
 			else
-				Util::log( __METHOD__ . "() ERROR failed to update user {$old->id}" );
+				Util::log( "ERROR " . __METHOD__ . "() failed to update user {$old->id}" );
 		}
 		else
-			Util::log( __METHOD__ . " nothing to do" );
+			Util::log( "INFO " . __METHOD__ . "() nothing to do" );
 
 		return false;
 	}
@@ -127,10 +127,10 @@ class UserFactory
 		$query = "INSERT into email (email_address) SELECT '".$db->escape_string( $email )."' FROM email WHERE email_address='".$db->escape_string( $email )."' HAVING COUNT(*)=0";
 		if ( $db->query( $query ) ) 
 		{
-			Util::log( __METHOD__ . "() added email {$email}:" );
-			Util::log( $query );			
+			Util::log( "INFO " . __METHOD__ . "() added email {$email}:" );
+			//Util::log( $query );			
 		}
 		else
-			Util::log( __METHOD__ . "() ERROR failed to add email {$email}" );		
+			Util::log( "ERROR " . __METHOD__ . "() failed to add email {$email}" );		
 	}
 }
